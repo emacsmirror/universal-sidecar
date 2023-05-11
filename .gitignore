@@ -1,10 +1,12 @@
 # -*- mode: gitignore; -*-
+# SPDX-License-Identifier: CC-BY-SA-4.0
 .*
 !.gitignore
 !.gitattributes
 !.gitmodules
 !.gitkeep
 !.dir-locals.el
+!.reuse
 
 # Emacs Stuff
 *~
