@@ -87,6 +87,27 @@ arguments."
 
 ;;; Opening Sidecars
 
+(defun universal-sidecar-get-name (&optional frame)
+  "Get the name of the sidecar buffer for FRAME.
+
+If FRAME is nil, use `selected-frame'."
+  (let ((frame (or frame (selected-frame)))
+        (id (frame-parameter frame 'window-id)))
+    (format-spec universal-sidecar-buffer-name-format (list (cons ?F id)))))
+
+(defun universal-sidecar-get-buffer (&optional frame)
+  "Get the sidecar buffer for FRAME."
+  (get-buffer (universal-sidecar-get-name frame)))
+
+(defun universal-sidecar-get-buffer-create (&optional frame)
+  "Get or create a sidecar buffer for FRAME."
+  (let ((frame (or frame (selected-frame))))
+    (or (universal-sidecar-get-buffer frame)
+        (with-current-buffer (get-buffer-create (universal-sidecar-get-name frame))
+          (universal-sidecar-buffer-mode)
+          (setq-local universal-sidecar-buffer-frame frame)
+          (current-buffer)))))
+
 
 ;;; Defining Sidecar Sections
 
