@@ -34,7 +34,7 @@
 (require 'cl-lib)
 
 
-;;; Defining Sidecars
+;;; Defining Sidecar Sections
 
 (cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer-for-sidecar))
   "Generate the expression to check if the selected BUFFER is one of MAJOR-MODES."
