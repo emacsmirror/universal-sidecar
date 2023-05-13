@@ -189,6 +189,7 @@ The arguments BUFFER-FOR-SIDECAR and SIDECAR are bound in BODY.
 
 If BODY has a string as the first element, this is used as the
 DOCSTRING for the generated function."
+  (declare (indent 3))
   (let* ((body-no-docstring (if docstring
                                 (cdr body)
                               body))
@@ -212,6 +213,7 @@ DOCSTRING for the generated function."
   ((keymap :initform 'universal-sidecar-section-map)))
 
 (defmacro universal-sidecar-insert-section (name header &body body)
+  (declare (indent 2))
   `(magit-insert-section ,name (universal-sidecar-section)
      (magit-insert-heading ,heading)
      ,@body))
