@@ -108,6 +108,16 @@ If FRAME is nil, use `selected-frame'."
           (setq-local universal-sidecar-buffer-frame frame)
           (current-buffer)))))
 
+(defun universal-sidecar-visible-p (&optional frame)
+  "Determine visibility of current sidecar visibility in FRAME."
+  (windowp (get-buffer-window (universal-sidecar-get-buffer frame))))
+
+(defun universal-sidecar-toggle (&optional frame)
+  "Toggle showing sidecar buffer for FRAME."
+  (if (universal-sidecar-visible-p frame)
+      (quit-window nil (universal-sidecar-get-buffer frame))
+    (display-buffer (universal-sidecar-get-buffer-create frame))))
+
 
 ;;; Defining Sidecar Sections
 
