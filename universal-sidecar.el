@@ -34,6 +34,15 @@
 (require 'cl-lib)
 
 
+;;; Customizations
+
+
+;;; Sidecar Buffer Mode
+
+
+;;; Opening Sidecars
+
+
 ;;; Defining Sidecar Sections
 
 (cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer-for-sidecar))
