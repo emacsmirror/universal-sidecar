@@ -33,6 +33,17 @@
 
 (require 'cl-lib)
 
+
+;;; Defining Sidecars
+
+(cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer-for-sidecar))
+  "Generate the expression to check if the selected BUFFER is one of MAJOR-MODES."
+  `(with-current-buffer ,buffer
+     (derived-mode-p ,@(mapcar #'(lambda (mode) `',mode)
+                               (or (and (listp major-modes)
+                                        major-modes)
+                                   (list major-modes))))))
+
 
 (provide 'universal-sidecar)
 
