@@ -71,6 +71,19 @@ arguments."
 
 ;;; Sidecar Buffer Mode
 
+(defvar-local universal-sidecar-buffer-frame nil
+  "Frame containing current sidecar.")
+
+(defvar universal-sidecar-buffer-mode-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map magit-section-mode-map)
+    map)
+  "Keymap for Sidecar Buffers.")
+
+(define-derived-mode universal-sidecar-buffer-mode magit-section-mode "Sidecar"
+  "Major mode for displaying information relevant to the current buffer."
+  :group 'universal-sidecar)
+
 
 ;;; Opening Sidecars
 
