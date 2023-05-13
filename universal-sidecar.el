@@ -131,6 +131,13 @@ If FRAME is nil, use `selected-frame'."
 
 ;;; Sidecar Display
 
+(defun universal-sidecar-set-title (title &optional sidecar)
+  "Set the header TITLE in SIDECAR."
+  (with-current-buffer (or sidecar
+                           (universal-sidecar-get-buffer))
+    (setq-local header-line-format (concat (propertize " " 'display '(space :align-to 0))
+                                           title))))
+
 (defun universal-sidecar-render (&optional buffer sidecar)
   "Render sections for BUFFER in SIDECAR.
 
@@ -146,6 +153,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
         (let ((inhibit-read-only t))
           (universal-sidecar-buffer-mode)
           (erase-buffer)
+          (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
           (dolist (section universal-sidecar-sections)
             (pcase section
               ((pred functionp)
@@ -155,9 +163,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                                       args)))
               (_
                (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
-          (setq-local header-line-format
-                      (concat (propertize " " 'display '(space :align-to 0))
-                              (propertize (buffer-name buffer) 'face 'bold)))
+
           (goto-char 0))))))
 
 
