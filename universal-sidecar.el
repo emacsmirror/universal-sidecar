@@ -82,6 +82,8 @@ DOCSTRING for the generated function."
        ,docstring
        ,body-with-predicate)))
 
+
+;;; Section generation utilities
 
 (provide 'universal-sidecar)
 
