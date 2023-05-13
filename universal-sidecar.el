@@ -144,6 +144,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
       (with-current-buffer sidecar
         (let ((inhibit-read-only t))
           (universal-sidecar-buffer-mode)
+          (erase-buffer)
           (dolist (section universal-sidecar-sections)
             (pcase section
               ((pred functionp)
