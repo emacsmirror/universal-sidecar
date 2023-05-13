@@ -44,6 +44,18 @@
                                         major-modes)
                                    (list major-modes))))))
 
+(cl-defun universal-sidecar--generate-predicate (major-modes predicate &optional (buffer 'buffer-for-sidecar))
+  "Generate predicate expression for MAJOR-MODES and PREDICATE.
+
+Use BUFFER as the checked buffer."
+  (cond
+   ((and predicate major-modes)
+    `(and
+      ,(universal-sidecar--generate-major-modes-expression major-modes buffer)
+      ,predicate))
+   (predicate predicate)
+   (major-modes (universal-sidecar--generate-major-modes-expression major-modes buffer))))
+
 
 (provide 'universal-sidecar)
 
