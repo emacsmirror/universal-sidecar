@@ -203,6 +203,19 @@ DOCSTRING for the generated function."
 
 ;;; Section generation utilities
 
+(defvar universal-sidecar-section-map
+  (let ((map (make-sparse-keymap)))
+    (set-keymap-parent map universal-sidecar-buffer-mode-map)
+    map))
+
+(defclass universal-sidecar-section (magit-section)
+  ((keymap :initform 'universal-sidecar-section-map)))
+
+(defmacro universal-sidecar-insert-section (name header &body body)
+  `(magit-insert-section ,name (universal-sidecar-section)
+     (magit-insert-heading ,heading)
+     ,@body))
+
 (provide 'universal-sidecar)
 
 ;;; universal-sidecar.el ends here
