@@ -121,6 +121,37 @@ If FRAME is nil, use `selected-frame'."
     (display-buffer (universal-sidecar-get-buffer-create frame))))
 
 
+;;; Sidecar Display
+
+(defun universal-sidecar-render (&optional buffer sidecar)
+  "Render sections for BUFFER in SIDECAR.
+
+If BUFFER is non-nil, use the currently focused buffer.
+If SIDECAR is non-nil, use sidecar for the current frame."
+  (interactive)
+  (when (universal-sidecar-visible-p)
+    (let ((buffer (or buffer
+                      (window-buffer (selected-window))))
+          (sidecar (or sidecar
+                       (universal-sidecar-get-buffer))))
+      (with-current-buffer sidecar
+        (let ((inhibit-read-only t))
+          (universal-sidecar-buffer-mode)
+          (dolist (section universal-sidecar-sections)
+            (pcase section
+              ((pred functionp)
+               (funcall section buffer sidecar))
+              (`(,section . ,args)
+               (apply section (append (list buffer sidecar)
+                                      args)))
+              (_
+               (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
+          (setq-local header-line-format
+                      (concat (propertize " " 'display '(space :align-to 0))
+                              (propertize (buffer-name buffer) 'face 'bold)))
+          (goto-char 0))))))
+
+
 ;;; Defining Sidecar Sections
 
 (cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer-for-sidecar))
