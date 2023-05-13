@@ -125,7 +125,8 @@ If FRAME is nil, use `selected-frame'."
   (interactive)
   (if (universal-sidecar-visible-p frame)
       (quit-window nil (get-buffer-window (universal-sidecar-get-buffer frame)))
-    (display-buffer (universal-sidecar-get-buffer-create frame))))
+    (display-buffer (universal-sidecar-get-buffer-create frame))
+    (universal-sidecar-render)))
 
 
 ;;; Sidecar Display
