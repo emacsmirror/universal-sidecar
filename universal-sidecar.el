@@ -68,6 +68,13 @@ arguments."
                                        :inline t
                                        (sexp :tag "Argument"))))))
 
+(defcustom universal-sidecar-insinuate-commands
+  (list 'switch-to-buffer
+        'other-window)
+  "A list of commands which should be advised to update the sidecar buffer."
+  :group 'universal-sidecar
+  :type '(list symbol))
+
 
 ;;; Sidecar Buffer Mode
 
@@ -150,6 +157,24 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                       (concat (propertize " " 'display '(space :align-to 0))
                               (propertize (buffer-name buffer) 'face 'bold)))
           (goto-char 0))))))
+
+
+;;; Updating the Sidecar
+(defun universal-sidecar-after-command-function (&rest _)
+  "After certain commands are run, re-render the sidecar."
+  (universal-sidecar-render))
+
+(defun universal-sidecar-update-insinuate ()
+  "Automatically advise functions to update the sidecar buffer."
+  (mapcan (lambda (cmd)
+            (advice-add cmd :after #'universal-sidecar-after-command-function))
+          universal-sidecar-insinuate-commands))
+
+(defun universal-sidecar-update-deinsinuate ()
+  "Unadvise commands that update the sidecar buffer."
+  (mapcan (lambda (cmd)
+            (advice-remove cmd #'universal-sidecar-after-command-function))
+          universal-sidecar-insinuate-commands))
 
 
 ;;; Defining Sidecar Sections
