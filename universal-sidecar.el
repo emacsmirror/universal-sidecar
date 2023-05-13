@@ -56,6 +56,32 @@ Use BUFFER as the checked buffer."
    (predicate predicate)
    (major-modes (universal-sidecar--generate-major-modes-expression major-modes buffer))))
 
+(cl-defmacro universal-sidecar-define-section (name (&rest args-list)
+                                                    (&key predicate major-modes &allow-other-keys)
+                                                    &body body
+                                                    &aux
+                                                    (docstring (and (stringp (car body))
+                                                                    (car body))))
+  "Define a sidecar section NAME with ARGS-LIST (implicit &key).
+
+BODY is wrapped in PREDICATE if present, including checking
+MAJOR-MODES.
+
+The arguments BUFFER-FOR-SIDECAR and SIDECAR are bound in BODY.
+
+If BODY has a string as the first element, this is used as the
+DOCSTRING for the generated function."
+  (let* ((body-no-docstring (if docstring
+                                (cdr body)
+                              body))
+         (generated-predicate (universal-sidecar--generate-predicate major-modes predicate))
+         (body-with-predicate (if generated-predicate
+                                  `(when ,generated-predicate ,@body-no-docstring)
+                                `(progn ,body-no-docstring))))
+    `(cl-defun ,name (buffer-for-sidecar sidecar &key ,@args-list &allow-other-keys)
+       ,docstring
+       ,body-with-predicate)))
+
 
 (provide 'universal-sidecar)
 
