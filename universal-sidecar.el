@@ -36,6 +36,37 @@
 
 ;;; Customizations
 
+(defgroup universal-sidecar nil
+  "Customization for universal-sidecar, showing relevant information for the focused buffer."
+  :group 'convenience
+  :prefix "universal-sidecar-"
+  :link '(url-link :tag "Sourcehut" "https://git.sr.ht/~swflint/universal-sidecar"))
+
+(defcustom universal-sidecar-buffer-name-format "*sidecar* (%F)"
+  "Format for universal sidecar name.
+
+Must contain %F, which is a string describing the current frame."
+  :group 'universal-sidecar
+  :type 'string)
+
+(defcustom universal-sidecar-sections (list)
+  "A list of sections that may be shown in the universal sidecar buffer.
+
+Sections are functions that take a minimum of two arguments: a
+BUFFER-FOR-SIDECAR (the buffer the sidecar is shown for), and
+SIDECAR (the buffer holding sidecar sections).
+
+A section may be described as either a function or a function and
+arguments to be passed after the BUFFER-FOR-SIDECAR and SIDECAR
+arguments."
+  :group 'universal-sidecar
+  :type '(repeat (choice (function :tag "Function")
+                         (list :tag "Function with arguments"
+                               (function :tag "Function")
+                               (repeat :tag "Arguments"
+                                       :inline t
+                                       (sexp :tag "Argument"))))))
+
 
 ;;; Sidecar Buffer Mode
 
