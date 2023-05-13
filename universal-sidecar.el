@@ -179,7 +179,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 
 ;;; Defining Sidecar Sections
 
-(cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer-for-sidecar))
+(cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer))
   "Generate the expression to check if the selected BUFFER is one of MAJOR-MODES."
   `(with-current-buffer ,buffer
      (derived-mode-p ,@(mapcar #'(lambda (mode) `',mode)
@@ -187,7 +187,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                                         major-modes)
                                    (list major-modes))))))
 
-(cl-defun universal-sidecar--generate-predicate (major-modes predicate &optional (buffer 'buffer-for-sidecar))
+(cl-defun universal-sidecar--generate-predicate (major-modes predicate &optional (buffer 'buffer))
   "Generate predicate expression for MAJOR-MODES and PREDICATE.
 
 Use BUFFER as the checked buffer."
@@ -210,7 +210,7 @@ Use BUFFER as the checked buffer."
 BODY is wrapped in PREDICATE if present, including checking
 MAJOR-MODES.
 
-The arguments BUFFER-FOR-SIDECAR and SIDECAR are bound in BODY.
+The arguments BUFFER and SIDECAR are bound in BODY.
 
 If BODY has a string as the first element, this is used as the
 DOCSTRING for the generated function."
@@ -222,7 +222,7 @@ DOCSTRING for the generated function."
          (body-with-predicate (if generated-predicate
                                   `(when ,generated-predicate ,@body-no-docstring)
                                 `(progn ,body-no-docstring))))
-    `(cl-defun ,name (buffer-for-sidecar sidecar &key ,@args-list &allow-other-keys)
+    `(cl-defun ,name (buffer sidecar &key ,@args-list &allow-other-keys)
        ,docstring
        ,body-with-predicate)))
 
