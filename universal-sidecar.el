@@ -146,8 +146,6 @@
 ;;     (add-to-list 'universal-sidecar-sections '(fortune-section :title "O Fortuna!"))
 ;;     (add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions" :title "Random Definition"))
 
-
-
 ;;; Code:
 
 (require 'cl-lib)
