@@ -31,8 +31,6 @@
                 (list 'universal-sidecar-roam-section defn)))
           sections-definition))
 
-(setf universal-sidecar-sections (universal-sidecar-convert-roam-sections org-roam-mode-sections))
-
 (provide 'roam-sidecar)
 
 ;;; roam-sidecar.el ends here
