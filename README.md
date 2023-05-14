@@ -56,6 +56,51 @@ In particular, using the `display-buffer-in-side-window` display action is sugge
                                      (no-delete-other-windows . t)))))
 ```
 
+## Section Functions
+
+The basic installation of `universal-sidecar` does not include any section functions.
+This is to reduce the number of dependencies of the package itself so that it may be used as a library for others, or to help integrate multiple packages.
+A `universal-sidecar-sections.el` package is available as well, which will have simple section definitions that may be of use.
+
+However, implementation of functions is generally straight-forward.
+First, sections are simply functions which take a minimum of two arguments, `buffer`, or the buffer we're generating a sidecar for, and `sidecar`, the sidecar buffer.
+When writing these section functions, it is recommended to avoid writing content to `sidecar` until it's verified that the information needed is available.
+That is **don't write sections without bodies**.
+
+To aid in defining sections, the `universal-sidecar-define-section` and `universal-sidecar-insert-section` macros are available.
+The first defines a section which can be added to `universal-sidecar-sections`.
+The second simplifies writing sections by adding proper separators and headers to the sidecar buffer.
+We will demonstrate both below.
+
+```elisp
+(universal-sidecar-define-section fortune-section (file title)
+                                  (:major-modes org-mode
+                                   :predicate (not (buffer-modified-p)))
+  (let ((title (or title
+                   (and file
+                        (format "Fortune: %s" file))
+                   "Fortune"))
+        (fortune (shell-command-to-string (format "fortune%s"
+                                                  (if file
+                                                      (format " %s" file)
+                                                    "")))))
+    (universal-sidecar-insert-section fortune-section title
+      (insert fortune))))
+```
+
+Note: the arguments (`file` and  `title`) are *keyword* arguments.
+Additionally, you specify that this section only applies when `buffer` is a descendent of `:major-modes` which can be either a symbol or a list of symbols.
+`:predicate` is used to specify a somewhat more complex predicate to determine if the section should be generated.
+
+This section could be added in any of the following ways:
+
+```elisp
+(add-to-list 'universal-sidecar-sections 'fortune-section)
+(add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions"))
+(add-to-list 'universal-sidecar-sections '(fortune-section :title "O Fortuna!"))
+(add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions" :title "Random Definition"))
+```
+
 ## Using Org-Roam Buffer Sections
 
 The additional file `roam-sidecar.el` can be used to show sections from the `org-roam-mode` buffer in `universal-sidecar`.
