@@ -2,6 +2,44 @@
 
 A universal "sidecar" buffer for emacs in the spirit of the `org-roam-mode` buffer.
 
+## Installation
+
+This package has one main requirement: `magit`, for `magit-section`.
+Assuming this package is satisfied, the `universal-sidecar.el` file may be placed on the load path and `require`d.
+
+## Usage and Configuration
+
+There are two main direct configuration points: the buffer name format, and the sections list.
+
+The buffer name format is what allows multiple sidecar buffers to be shown, presently, one per frame.
+This is a format string which must contain `%F`.
+
+The sections list, on the otherhand, is more complex.
+This is how you determine what is shown in a sidecar for a buffer.
+Generally speaking, this is a list of functions which take a minimum of two arguments: the buffer and the sidecar.
+Using information in the buffer, the sidecar will be populated.
+Each section function will be run in the order of the list: it's important to carefully consider what order you put these in.
+More about defining sections is written below.
+
+Additionally, the sidecar buffer is shown using `display-buffer`.
+The author's recommended configuration is shown below.
+
+```elisp
+(add-to-list 'display-buffer-alist
+             '("\\*sidecar\\*"
+               (display-buffer-in-side-window)
+               (slot . 0)
+               (window-width . 0.2)
+               (window-height . 0.2)
+               (preserve-size t . t)
+               (window-parameters . ((no-other-window . t)
+                                     (no-delete-other-windows . t)))))
+```
+
+Finally, advice is used to help ensure that the sidecar buffer gets updated appropriately.
+This can be done semi-automatically using the `universal-sidecar-update-insinuate` function.
+This will automatically advise functions in the `universal-sidecar-insinuate-commands` list with after advice, which calls `universal-sidecar-render`.
+
 ## Using Org-Roam Buffer Sections
 
 The additional file `roam-sidecar.el` can be used to show sections from the `org-roam-mode` buffer in `universal-sidecar`.
