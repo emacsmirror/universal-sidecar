@@ -7,7 +7,18 @@ A universal "sidecar" buffer for emacs in the spirit of the `org-roam-mode` buff
 This package has one main requirement: `magit`, for `magit-section`.
 Assuming this package is satisfied, the `universal-sidecar.el` file may be placed on the load path and `require`d.
 
-## Usage and Configuration
+## Usage
+
+The `universal-sidecar-toggle` command will bring up a per-frame "sidecar" buffer.
+These sidecar buffers are used to show information about or related to the focused buffer.
+Information is shown in *sections*, which are configured using the `universal-sidecar-sections` variable.
+The behavior of this variable, and expected interface is described below in configuration.
+
+Additionally, to make sure that the sidecar buffer is updated, it's necessary to advise several functions.
+This can be done automatically using the `universal-sidecar-update-insinuate` function, which will advise functions listed in `universal-sidecar-insinuate-commands`.
+This may be undone with `universal-sidecar-unadvise-commands`.
+
+## Configuration
 
 There are two main direct configuration points: the buffer name format, and the sections list.
 
