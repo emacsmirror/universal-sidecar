@@ -18,22 +18,31 @@ Additionally, to make sure that the sidecar buffer is updated, it's necessary to
 This can be done automatically using the `universal-sidecar-update-insinuate` function, which will advise functions listed in `universal-sidecar-insinuate-commands`.
 This may be undone with `universal-sidecar-unadvise-commands`.
 
-## Configuration
+### Configuration
 
-There are two main direct configuration points: the buffer name format, and the sections list.
+The name of the sidecar buffer is configured using `universal-sidecar-buffer-name-format`, which must contain `%F`, a representation of the description of the frame.
 
-The buffer name format is what allows multiple sidecar buffers to be shown, presently, one per frame.
-This is a format string which must contain `%F`.
+Which sections are shown is configured using `universal-sidecar-sections`, which is a list of functions or functions-with-arguments.
+For example, let's consider the section `buffer-git-status`, which shows git status.
+This section allows a keyword argument, `:show-renames`, which defaults to t.
+If we want the default behavior, we would configure it using
 
-The sections list, on the otherhand, is more complex.
-This is how you determine what is shown in a sidecar for a buffer.
-Generally speaking, this is a list of functions which take a minimum of two arguments: the buffer and the sidecar.
-Using information in the buffer, the sidecar will be populated.
-Each section function will be run in the order of the list: it's important to carefully consider what order you put these in.
-More about defining sections is written below.
+```elisp
+(add-to-list 'universal-sidecar-sections 'buffer-git-status)
+```
 
-Additionally, the sidecar buffer is shown using `display-buffer`.
-The author's recommended configuration is shown below.
+However, if we want the opposite behavior (don't show renames), we'd configure it as shown below.
+
+```elisp
+(add-to-list 'universal-sidecar-sections '(buffer-git-status :show-renames t))
+```
+
+Note that using `add-to-list` is generally bad practice, as the sections will be run in the order they're present in the list.
+
+Finally, sidecar buffers are displayed using `display-window`.
+This means that how the buffer is displayed is easily configurable from `display-buffer-alist`.
+The author's configuration is shown below as an example.
+In particular, using the `display-buffer-in-side-window` display action is suggested, as it's generally not helpful to select the sidecar window through normal window motion commands
 
 ```elisp
 (add-to-list 'display-buffer-alist
@@ -46,10 +55,6 @@ The author's recommended configuration is shown below.
                (window-parameters . ((no-other-window . t)
                                      (no-delete-other-windows . t)))))
 ```
-
-Finally, advice is used to help ensure that the sidecar buffer gets updated appropriately.
-This can be done semi-automatically using the `universal-sidecar-update-insinuate` function.
-This will automatically advise functions in the `universal-sidecar-insinuate-commands` list with after advice, which calls `universal-sidecar-render`.
 
 ## Using Org-Roam Buffer Sections
 
