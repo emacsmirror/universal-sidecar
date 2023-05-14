@@ -253,25 +253,25 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 
 ;;; Defining Sidecar Sections
 
-(cl-defun universal-sidecar--generate-major-modes-expression (major-modes &optional (buffer 'buffer))
+(cl-defun universal-sidecar--generate-major-modes-expression (major-modes)
   "Generate the expression to check if the selected BUFFER is one of MAJOR-MODES."
-  `(with-current-buffer ,buffer
-     (derived-mode-p ,@(mapcar #'(lambda (mode) `',mode)
-                               (or (and (listp major-modes)
-                                        major-modes)
-                                   (list major-modes))))))
+  `(derived-mode-p ,@(mapcar #'(lambda (mode) `',mode)
+                             (or (and (listp major-modes)
+                                      major-modes)
+                                 (list major-modes)))))
 
 (cl-defun universal-sidecar--generate-predicate (major-modes predicate &optional (buffer 'buffer))
   "Generate predicate expression for MAJOR-MODES and PREDICATE.
 
 Use BUFFER as the checked buffer."
-  (cond
-   ((and predicate major-modes)
-    `(and
-      ,(universal-sidecar--generate-major-modes-expression major-modes buffer)
-      ,predicate))
-   (predicate predicate)
-   (major-modes (universal-sidecar--generate-major-modes-expression major-modes buffer))))
+  `(with-current-buffer ,buffer
+     ,(cond
+       ((and predicate major-modes)
+        `(and
+          ,(universal-sidecar--generate-major-modes-expression major-modes)
+          ,predicate))
+       (predicate predicate)
+       (major-modes (universal-sidecar--generate-major-modes-expression major-modes)))))
 
 (cl-defmacro universal-sidecar-define-section (name (&rest args-list)
                                                     (&key predicate major-modes &allow-other-keys)
