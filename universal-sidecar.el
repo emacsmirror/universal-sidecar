@@ -68,10 +68,9 @@
 ;;
 ;; Finally, advice is used to help ensure that the sidecar buffer gets
 ;; updated appropriately.  This can be done semi-automatically using
-;; the `universal-sidecar-update-insinuate' function.  This will
-;; automatically advise functions in the
-;; `universal-sidecar-insinuate-commands' list with after advice,
-;; which calls `universal-sidecar-refresh'.
+;; the `universal-sidecar-advise-commands' function.  This will
+;; automatically advise functions in the `universal-sidecar-advise'
+;; list with after advice, which calls `universal-sidecar-refresh'.
 
 ;;; Code:
 
@@ -112,7 +111,7 @@ arguments."
                                        :inline t
                                        (sexp :tag "Argument"))))))
 
-(defcustom universal-sidecar-insinuate-commands
+(defcustom universal-sidecar-advise-commands
   (list 'switch-to-buffer
         'other-window)
   "A list of commands which should be advised to update the sidecar buffer."
@@ -216,13 +215,13 @@ If SIDECAR is non-nil, use sidecar for the current frame."
   "After certain commands are run, refresh the sidecar."
   (universal-sidecar-refresh))
 
-(defun universal-sidecar-update-insinuate ()
+(defun universal-sidecar-advise-commands ()
   "Automatically advise functions to update the sidecar buffer."
   (mapcan (lambda (cmd)
             (advice-add cmd :after #'universal-sidecar-after-command-function))
           universal-sidecar-insinuate-commands))
 
-(defun universal-sidecar-update-deinsinuate ()
+(defun universal-sidecar-unadvise-commands ()
   "Unadvise commands that update the sidecar buffer."
   (mapcan (lambda (cmd)
             (advice-remove cmd #'universal-sidecar-after-command-function))
