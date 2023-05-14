@@ -71,7 +71,7 @@
 ;; the `universal-sidecar-update-insinuate' function.  This will
 ;; automatically advise functions in the
 ;; `universal-sidecar-insinuate-commands' list with after advice,
-;; which calls `universal-sidecar-render'.
+;; which calls `universal-sidecar-refresh'.
 
 ;;; Code:
 
@@ -170,7 +170,7 @@ If FRAME is nil, use `selected-frame'."
   (if (universal-sidecar-visible-p frame)
       (quit-window nil (get-buffer-window (universal-sidecar-get-buffer frame)))
     (display-buffer (universal-sidecar-get-buffer-create frame))
-    (universal-sidecar-render)))
+    (universal-sidecar-refresh)))
 
 
 ;;; Sidecar Display
@@ -182,8 +182,8 @@ If FRAME is nil, use `selected-frame'."
     (setq-local header-line-format (concat (propertize " " 'display '(space :align-to 0))
                                            title))))
 
-(defun universal-sidecar-render (&optional buffer sidecar)
-  "Render sections for BUFFER in SIDECAR.
+(defun universal-sidecar-refresh (&optional buffer sidecar)
+  "Refresh sections for BUFFER in SIDECAR.
 
 If BUFFER is non-nil, use the currently focused buffer.
 If SIDECAR is non-nil, use sidecar for the current frame."
@@ -213,8 +213,8 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 
 ;;; Updating the Sidecar
 (defun universal-sidecar-after-command-function (&rest _)
-  "After certain commands are run, re-render the sidecar."
-  (universal-sidecar-render))
+  "After certain commands are run, refresh the sidecar."
+  (universal-sidecar-refresh))
 
 (defun universal-sidecar-update-insinuate ()
   "Automatically advise functions to update the sidecar buffer."
