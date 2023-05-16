@@ -280,7 +280,6 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                                       args)))
               (_
                (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
-
           (goto-char 0))))))
 
 
