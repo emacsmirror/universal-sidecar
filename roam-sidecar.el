@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Version: 0.5.0
-;; Package-Requires: ((emacs "26.1") (universal-sidecar "0.3.0"))
+;; Package-Requires: ((emacs "26.1") (universal-sidecar "0.3.0") (org-roam "2.0.0"))
 
 ;;; Commentary:
 ;;
