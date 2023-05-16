@@ -199,6 +199,7 @@ arguments."
 (defvar universal-sidecar-buffer-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map magit-section-mode-map)
+    (define-key map (kbd "g") #'universal-sidecar-refresh)
     map)
   "Keymap for Sidecar Buffers.")
 
