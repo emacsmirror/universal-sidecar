@@ -195,6 +195,8 @@ arguments."
 
 ;;; Sidecar Buffer Mode
 
+(defvar-local universal-sidecar-current-buffer nil
+  "What is the current buffer for the sidecar, before refresh?")
 
 (defvar universal-sidecar-buffer-mode-map
   (let ((map (make-sparse-keymap)))
@@ -260,14 +262,18 @@ If BUFFER is non-nil, use the currently focused buffer.
 If SIDECAR is non-nil, use sidecar for the current frame."
   (interactive)
   (when (universal-sidecar-visible-p)
-    (let ((buffer (or buffer
-                      (window-buffer (selected-window))))
-          (sidecar (or sidecar
-                       (universal-sidecar-get-buffer))))
+    (let* ((sidecar (or sidecar
+                        (universal-sidecar-get-buffer)))
+           (buffer (or buffer
+                       (if-let ((buf (window-buffer (selected-window)))
+                                (_buffer-is-sidecar-p (equal buf sidecar)))
+                           (with-current-buffer sidecar universal-sidecar-current-buffer)
+                         buf))))
       (with-current-buffer sidecar
         (let ((inhibit-read-only t))
           (universal-sidecar-buffer-mode)
           (erase-buffer)
+          (setq-local universal-sidecar-current-buffer buffer)
           (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
           (dolist (section universal-sidecar-sections)
             (pcase section
