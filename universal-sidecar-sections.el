@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Version: 0.0.1
-;; Package-Requires: ((universal-sidecar 0.5.0))
+;; Package-Requires: ((universal-sidecar "1.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -31,6 +31,8 @@
 ;;; Code:
 
 (require 'universal-sidecar)
+
+;;; TODO: Implement some generic sidecars
 
 
 (provide 'universal-sidecar-sections)
