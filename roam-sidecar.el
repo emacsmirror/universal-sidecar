@@ -31,7 +31,7 @@
 ;; (setq universal-sidecar-sections
 ;;       (universal-sidecar-convert-roam-sections org-roam-mode-sections))
 
-(require 'org-roam)
+(require 'org-roam-node)
 (require 'universal-sidecar)
 
 ;;; Code:
