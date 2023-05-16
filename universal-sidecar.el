@@ -195,8 +195,6 @@ arguments."
 
 ;;; Sidecar Buffer Mode
 
-(defvar-local universal-sidecar-buffer-frame nil
-  "Frame containing current sidecar.")
 
 (defvar universal-sidecar-buffer-mode-map
   (let ((map (make-sparse-keymap)))
@@ -229,7 +227,6 @@ If FRAME is nil, use `selected-frame'."
     (or (universal-sidecar-get-buffer frame)
         (with-current-buffer (get-buffer-create (universal-sidecar-get-name frame))
           (universal-sidecar-buffer-mode)
-          (setq-local universal-sidecar-buffer-frame frame)
           (current-buffer)))))
 
 (defun universal-sidecar-visible-p (&optional frame)
