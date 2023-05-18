@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Version: 0.5.0
-;; Package-Requires: ((universal-sidecar "1.0.0") bibtex-completion elfeed)
+;; Package-Requires: ((emacs "25.1") (universal-sidecar "1.0.0") (bibtex-completion "1.0.0") (elfeed "3.4.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
