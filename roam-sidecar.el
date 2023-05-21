@@ -38,10 +38,11 @@
 
 (defun universal-sidecar-roam-section (buffer sidecar roam-section &rest args)
   "Run ROAM-SECTION with ARGS for BUFFER in SIDECAR."
-  (when-let ((node (with-current-buffer buffer (org-roam-node-at-point nil))))
-    (universal-sidecar-set-title (propertize (org-roam-node-title node) 'font-lock-face 'bold))
-    (with-current-buffer sidecar
-      (apply roam-section (cons node args)))))
+  (when (with-current-buffer buffer (derived-mode-p 'org-mode))
+    (when-let ((node (with-current-buffer buffer (org-roam-node-at-point nil))))
+      (universal-sidecar-set-title (propertize (org-roam-node-title node) 'font-lock-face 'bold))
+      (with-current-buffer sidecar
+        (apply roam-section (cons node args))))))
 
 (defun universal-sidecar-convert-roam-sections (sections-definition)
   "Convert SECTIONS-DEFINITION to `universal-sidecar-org-section'."
