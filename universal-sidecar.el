@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((emacs "25.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -296,13 +296,13 @@ If SIDECAR is non-nil, use sidecar for the current frame."
   "Automatically advise functions to update the sidecar buffer."
   (mapcan (lambda (cmd)
             (advice-add cmd :after #'universal-sidecar-after-command-function))
-          universal-sidecar-insinuate-commands))
+          universal-sidecar-advise-commands))
 
 (defun universal-sidecar-unadvise-commands ()
   "Unadvise commands that update the sidecar buffer."
   (mapcan (lambda (cmd)
             (advice-remove cmd #'universal-sidecar-after-command-function))
-          universal-sidecar-insinuate-commands))
+          universal-sidecar-advise-commands))
 
 
 ;;; Defining Sidecar Sections
