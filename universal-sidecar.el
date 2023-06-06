@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.1
+;; Version: 1.1.0
 ;; Package-Requires: ((emacs "25.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -188,9 +188,17 @@ arguments."
 (defcustom universal-sidecar-advise-commands
   (list 'switch-to-buffer
         'other-window)
-  "A list of commands which should be advised to update the sidecar buffer."
+  "A list of commands which should be advised to update the sidecar buffer.
+
+Commands can either be symbols (which have the advice run after),
+or `(symbol location)' lists.  Location should be `:after',
+`:before', or `:interactive'."
   :group 'universal-sidecar
-  :type '(list symbol))
+  :type '(repeat (choice (symbol :tag "Function Name")
+                         (list (symbol :tag "Function Name")
+                               (choice (const :tag "After" :after)
+                                       (const :tag "Before" :before)
+                                       (const :tag "Interactive" :interactive))))))
 
 
 ;;; Sidecar Buffer Mode
@@ -288,21 +296,46 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 
 
 ;;; Updating the Sidecar
-(defun universal-sidecar-after-command-function (&rest _)
-  "After certain commands are run, refresh the sidecar."
+
+(defun universal-sidecar-command-advice (&rest _)
+  "Before/after certain commands are run, refresh the sidecar."
   (universal-sidecar-refresh))
+
+(defun universal-sidecar-interactive-command-advice (original &rest arguments)
+  "When ORIGINAL run, if called interactively, refresh sidecar, else, pass ARGUMENTS."
+  (if (called-interactively-p)
+      (progn
+        (universal-sidecar-refresh)
+        (call-interactively original))
+    (apply original arguments)))
 
 (defun universal-sidecar-advise-commands ()
   "Automatically advise functions to update the sidecar buffer."
-  (mapcan (lambda (cmd)
-            (advice-add cmd :after #'universal-sidecar-after-command-function))
-          universal-sidecar-advise-commands))
+  (dolist (command-spec universal-sidecar-advise-commands)
+    (pcase command-spec
+      (`(,command :after)
+       (advice-add command :after #'universal-sidecar-command-advice))
+      (`(,command :before)
+       (advice-add command :before #'universal-sidecar-command-advice))
+      (`(,command :interactive)
+       (advice-add command :around #'universal-sidecar-interactive-command-advice))
+      (`,command
+       (advice-add command :after #'universal-sidecar-command-advice)))))
 
 (defun universal-sidecar-unadvise-commands ()
   "Unadvise commands that update the sidecar buffer."
-  (mapcan (lambda (cmd)
-            (advice-remove cmd #'universal-sidecar-after-command-function))
-          universal-sidecar-advise-commands))
+  (dolist (command-spec universal-sidecar-advise-command)
+    (let ((command (or (and (listp command-spec) (first command-spec))
+                       command-spec)))
+      (cond
+       ((advice-member-p #'universal-sidecar-command-advice
+                         command)
+        (advice-remove command
+                       #'universal-sidecar-command-advice))
+       ((advice-member-p #'universal-sidecar-interactive-command-advice
+                         command)
+        (advice-remove command
+                       #'universal-sidecar-interactive-command-advice))))))
 
 
 ;;; Defining Sidecar Sections
