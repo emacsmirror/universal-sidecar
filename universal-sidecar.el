@@ -335,7 +335,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 
 (defun universal-sidecar-unadvise-commands ()
   "Unadvise commands that update the sidecar buffer."
-  (dolist (command-spec universal-sidecar-advise-command)
+  (dolist (command-spec universal-sidecar-advise-commands)
     (let ((command (or (and (listp command-spec) (first command-spec))
                        command-spec)))
       (cond
