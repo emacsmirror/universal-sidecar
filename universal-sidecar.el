@@ -306,8 +306,8 @@ If SIDECAR is non-nil, use sidecar for the current frame."
   "When ORIGINAL run, if called interactively, refresh sidecar, else, pass ARGUMENTS."
   (if (called-interactively-p)
       (progn
-        (universal-sidecar-refresh)
-        (call-interactively original))
+        (call-interactively original)
+        (universal-sidecar-refresh))
     (apply original arguments)))
 
 (defun universal-sidecar-interactive-before-command-advice (original &rest arguments)
