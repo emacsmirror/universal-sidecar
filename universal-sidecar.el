@@ -187,7 +187,10 @@ arguments."
 
 (defcustom universal-sidecar-advise-commands
   (list 'switch-to-buffer
-        'other-window)
+        'other-window
+        'display-buffer
+        'find-file
+        'find-file-read-only)
   "A list of commands which should be advised to update the sidecar buffer.
 
 Commands can either be symbols (which have the advice run after),
