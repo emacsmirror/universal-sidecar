@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.1.1
+;; Version: 1.2.0
 ;; Package-Requires: ((emacs "25.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -44,13 +44,17 @@
 ;; `universal-sidecar-sections' variable.  The behavior of this
 ;; variable, and expected interface is described below in
 ;; configuration.
-
+;;
 ;; Additionally, to make sure that the sidecar buffer is updated, it's
 ;; necessary to advise several functions.  This can be done
-;; automatically using the `universal-sidecar-update-insinuate'
-;; function, which will advise functions listed in
-;; `universal-sidecar-insinuate-commands'.  This may be undone with
-;; `universal-sidecar-unadvise-commands'.
+;; automatically using the `universal-sidecar-insinuate' function,
+;; which will advise functions listed in
+;; `universal-sidecar-advise-commands'.  This may be undone with
+;; `universal-sidecar-uninsinuate'.  Additionally,
+;; `universal-sidecar-insinuate' will add `universal-sidecar-refresh'
+;; to the `focus-in-hook', and will set an idle timer to refresh all
+;; sidecar buffers (idle time configured with
+;; `universal-sidecar-refresh-time').
 ;;
 ;;;; Configuration
 ;;
@@ -204,6 +208,11 @@ or `(symbol location)' lists.  Location should be `:after',
                            (list :tag "Interactive (After)" ,fn (const :interactive-after))
                            (list :tag "Interactive (Before)" ,fn (const :interactive-before))))))
 
+(defcustom universal-sidecar-refresh-time 5
+  "How many seconds Emacs should be idle before sidecars are auto-refreshed."
+  :group 'universal-sidecar
+  :type 'number)
+
 
 ;;; Sidecar Buffer Mode
 
@@ -354,6 +363,32 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                          command)
         (advice-remove command
                        #'universal-sidecar-interactive-before-command-advice))))))
+
+(defvar universal-sidecar-refresh-timer nil
+  "Idle timer for refreshing the universal sidecar buffer.")
+
+(defun universal-sidecar-refresh-all ()
+  "Refresh all sidecar buffers."
+  (dolist (frame (frame-list))
+    (with-selected-frame frame
+      (universal-sidecar-refresh))))
+
+(defun universal-sidecar-insinuate ()
+  "Insinuate (i.e., enable) automatic refresh of sidecars."
+  (universal-sidecar-advise-commands)
+  (add-hook 'focus-in-hook #'universal-sidecar-refresh)
+  (when (timerp universal-sidecar-refresh-timer)
+    (cancel-timer universal-sidecar-refresh-timer))
+  (setf universal-sidecar-refresh-timer (run-with-idle-timer universal-sidecar-refresh-time t
+                                                             #'universal-sidecar-refresh-all)))
+
+(defun universal-sidecar-uninsinuate ()
+  "Uninsinuate (i.e., disable) automatic refresh of sidecars."
+  (universal-sidecar-unadvise-commands)
+  (remove-hook 'focus-in-hook #'universal-sidecar-refresh)
+  (when (timerp universal-sidecar-refresh-timer)
+    (cancel-timer universal-sidecar-refresh-timer)
+    (setf universal-sidecar-refresh-timer nil)))
 
 
 ;;; Defining Sidecar Sections

@@ -15,8 +15,9 @@ Information is shown in *sections*, which are configured using the `universal-si
 The behavior of this variable, and expected interface is described below in configuration.
 
 Additionally, to make sure that the sidecar buffer is updated, it's necessary to advise several functions.
-This can be done automatically using the `universal-sidecar-update-insinuate` function, which will advise functions listed in `universal-sidecar-insinuate-commands`.
-This may be undone with `universal-sidecar-unadvise-commands`.
+This can be done automatically using the `universal-sidecar-insinuate` function, which will advise functions listed in `universal-sidecar-advise-commands`.
+This may be undone with `universal-sidecar-uninsinuate`.
+Additionally, `universal-sidecar-insinuate` will add `universal-sidecar-refresh` to the `focus-in-hook`, and will set an idle timer to refresh all sidecar buffers (idle time configured with `universal-sidecar-refresh-time`).
 
 ### Configuration
 
