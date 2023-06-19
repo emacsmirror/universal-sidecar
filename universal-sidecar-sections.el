@@ -42,14 +42,10 @@ If BUFFER is a buffer, return, if it's a string, use
 `get-buffer', if a symbol, get its value, and if a function, call
 it."
   (cond
-   ((bufferp show-buffer)
-    show-buffer)
-   ((stringp show-buffer)
-    (get-buffer show-buffer))
-   ((symbolp show-buffer)
-    (symbol-value show-buffer))
-   ((functionp show-buffer)
-    (funcall show-buffer))))
+   ((bufferp buffer) show-buffer)
+   ((stringp buffer) (get-buffer buffer))
+   ((symbolp buffer) (symbol-value buffer))
+   ((functionp buffer) (funcall buffer))))
 
 (defun universal-sidecar-buffer-tail (buffer n)
   "Get the last N lines from BUFFER, return nil if BUFFER is empty."
@@ -58,7 +54,7 @@ it."
       (goto-char (point-max))
       (forward-line (- n))
       (beginning-of-line)
-      (buffer-substring (point) (point-max)))))
+      (string-trim (buffer-substring (point) (point-max))))))
 
 (universal-sidecar-define-section tail-buffer-section (show-buffer n-lines title) ()
   "Show N-LINES of SHOW-BUFFER in a sidecar with TITLE.
