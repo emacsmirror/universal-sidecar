@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.2.1
+;; Version: 1.2.2
 ;; Package-Requires: ((emacs "25.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -406,14 +406,15 @@ If SIDECAR is non-nil, use sidecar for the current frame."
   "Generate predicate expression for MAJOR-MODES and PREDICATE.
 
 Use BUFFER as the checked buffer."
-  `(with-current-buffer ,buffer
-     ,(cond
-       ((and predicate major-modes)
-        `(and
-          ,(universal-sidecar--generate-major-modes-expression major-modes)
-          ,predicate))
-       (predicate predicate)
-       (major-modes (universal-sidecar--generate-major-modes-expression major-modes)))))
+  (when (or major-modes predicate)
+    `(with-current-buffer ,buffer
+       ,(cond
+         ((and predicate major-modes)
+          `(and
+            ,(universal-sidecar--generate-major-modes-expression major-modes)
+            ,predicate))
+         (predicate predicate)
+         (major-modes (universal-sidecar--generate-major-modes-expression major-modes))))))
 
 (cl-defmacro universal-sidecar-define-section (name (&rest args-list)
                                                     (&key predicate major-modes &allow-other-keys)
@@ -437,7 +438,7 @@ DOCSTRING for the generated function."
          (generated-predicate (universal-sidecar--generate-predicate major-modes predicate))
          (body-with-predicate (if generated-predicate
                                   `(when ,generated-predicate ,@body-no-docstring)
-                                `(progn ,body-no-docstring))))
+                                `(progn ,@body-no-docstring))))
     `(cl-defun ,name (buffer sidecar &key ,@args-list &allow-other-keys)
        ,docstring
        ,body-with-predicate)))
