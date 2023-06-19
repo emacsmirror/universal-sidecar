@@ -134,3 +134,15 @@ Note, however, that as of now, search is only by author last name.
 ## Elfeed Score Section
 
 The section `elfeed-score-section` shows the score of the currently shown elfeed entry and why it is scored that way.
+
+## Basic and Example Sections
+
+These are found in `universal-sidecar-sections.el`.
+
+### Buffer Tail
+
+`(tail-buffer-section :show-buffer :n-lines :title)`
+
+Show the last `n-lines` of `show-buffer` in the sidecar with `title`.
+If `show-buffer` doesn't exist, or is empty, no section will be shown.
+Additionally, `show-buffer` can be a buffer object, a string buffer name, a symbol whose value is a buffer, or a zero-argument function which will be called to get a buffer.

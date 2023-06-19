@@ -32,8 +32,47 @@
 
 (require 'universal-sidecar)
 
-;;; TODO: Implement some generic sidecars
+
+;;; Basic "tail of buffer" section
 
+(defun universal-sidecar-resolve-buffer (buffer)
+  "Resolve BUFFER to an actual buffer object.
+
+If BUFFER is a buffer, return, if it's a string, use
+`get-buffer', if a symbol, get its value, and if a function, call
+it."
+  (cond
+   ((bufferp show-buffer)
+    show-buffer)
+   ((stringp show-buffer)
+    (get-buffer show-buffer))
+   ((symbolp show-buffer)
+    (symbol-value show-buffer))
+   ((functionp show-buffer)
+    (funcall show-buffer))))
+
+(defun universal-sidecar-buffer-tail (buffer n)
+  "Get the last N lines from BUFFER, return nil if BUFFER is empty."
+  (unless (= 0 (buffer-size buffer))
+    (with-current-buffer buffer
+      (goto-char (point-max))
+      (forward-line (- n))
+      (beginning-of-line)
+      (buffer-substring (point) (point-max)))))
+
+(universal-sidecar-define-section tail-buffer-section (show-buffer n-lines title) ()
+  "Show N-LINES of SHOW-BUFFER in a sidecar with TITLE.
+
+Note: SHOW-BUFFER may be a buffer, string, or function."
+  (when (and (stringp title)
+             (integerp n-lines))
+    (when-let* ((show-buffer (universal-sidecar-resolve-buffer show-buffer))
+                (contents (universal-sidecar-buffer-tail show-buffer n-lines)))
+      (universal-sidecar-insert-section tail-buffer-section title
+        (with-current-buffer sidecar
+          (insert contents))))))
+
+;;; TODO: Implement some (more) generic sidecars
 
 (provide 'universal-sidecar-sections)
 
