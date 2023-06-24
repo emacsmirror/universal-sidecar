@@ -1,4 +1,4 @@
-;;; elfeed-related-papers.el --- Related Papers Sidecar Section for Elfeed -*- lexical-binding: t -*-
+;;; universal-sidecar-elfeed-related.el --- Related Papers Sidecar Section for Elfeed -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 Samuel W. Flint <me@samuelwflint.com>
 
@@ -64,14 +64,14 @@ return a fully-formatted string (font properties may be set using
 
 ;;; Select formatting candidates
 
-(defun elfeed-related-papers--author-regexp (authors)
+(defun universal-sidecar-elfeed-related--author-regexp (authors)
   "Generate a regular expression to match AUTHORS in bibtex entries."
   (regexp-opt (mapcar #'(lambda (author)
                           (car (last (split-string (plist-get :name author)))))
                       authors)
               'words))
 
-(defun elfeed-related-papers-search-candidates (regexp)
+(defun universal-sidecar-elfeed-related-search-candidates (regexp)
   "List entry keys which match REGEXP."
   (mapcar #'cdr (cl-remove-if-not
                  #'(lambda (entry)
@@ -81,21 +81,21 @@ return a fully-formatted string (font properties may be set using
 
 ;;; Define the sidecar section
 
-(universal-sidecar-define-section elfeed-related-works-section ()
+(universal-sidecar-define-section universal-sidecar-elfeed-related-section ()
                                   (:major-modes elfeed-show-mode)
   (when-let ((elfeed-entry (with-current-buffer buffer elfeed-show-entry))
              (title (elfeed-entry-title elfeed-entry))
-             (authors-regexp (elfeed-related-papers--author-regexp (elfeed-meta elfeed-entry :authors)))
+             (authors-regexp (universal-sidecar-elfeed-related--author-regexp (elfeed-meta elfeed-entry :authors)))
              (candidate-keys (mapcar #'cdr
                                      (mapcar (apply-partially #'assoc "=key=")
-                                             (elfeed-related-papers-search-candidates authors-regexp)))))
+                                             (universal-sidecar-elfeed-related-search-candidates authors-regexp)))))
     (universal-sidecar-insert-section elfeed-related-works "Related Articles"
       (dolist (key candidate-keys)
-        (insert " - " (funcall elfeed-related-papers-citation-formatter
+        (insert " - " (funcall universal-sidecar-elfeed-related-citation-formatter
                                (bibtex-completion-get-entry key))
                 "\n")))))
 
 
-(provide 'elfeed-related-papers)
+(provide 'universal-sidecar-elfeed-related)
 
-;;; elfeed-related-papers.el ends here
+;;; universal-sidecar-elfeed-related.el ends here

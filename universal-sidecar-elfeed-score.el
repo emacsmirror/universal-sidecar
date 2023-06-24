@@ -1,4 +1,4 @@
-;;; elfeed-score-sidecar.el --- Show Elfeed Score information in sidecar -*- lexical-binding: t -*-
+;;; universal-sidecar-elfeed-score.el --- Show Elfeed Score information in sidecar -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 Samuel W. Flint <me@samuelwflint.com>
 
@@ -38,7 +38,7 @@
 (require 'elfeed-db)
 (require 'elfeed-score-scoring)
 
-(universal-sidecar-define-section elfeed-score-section ()
+(universal-sidecar-define-section universal-sidecar-elfeed-score-section ()
                                   (:major-modes elfeed-show-mode)
   (when-let ((elfeed-entry (with-current-buffer buffer elfeed-show-entry))
              (title (elfeed-entry-title elfeed-entry))
@@ -48,6 +48,6 @@
       (universal-sidecar-insert-section score-information (format "Article score: %d" score)
         (elfeed-score-scoring-explain-entry elfeed-entry sidecar)))))
 
-(provide 'elfeed-score-sidecar)
+(provide 'universal-sidecar-elfeed-score)
 
-;;; elfeed-score-sidecar.el ends here
+;;; universal-sidecar-elfeed-score.el ends here
