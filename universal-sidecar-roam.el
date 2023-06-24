@@ -29,7 +29,7 @@
 ;; Finally, your sections can be added en-masse with:
 ;;
 ;; (setq universal-sidecar-sections
-;;       (universal-sidecar-convert-roam-sections org-roam-mode-sections))
+;;       (universal-sidecar-roam-convert-roam-sections org-roam-mode-sections))
 
 (require 'org-roam-node)
 (require 'universal-sidecar)
