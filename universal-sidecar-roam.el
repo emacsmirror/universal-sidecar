@@ -54,4 +54,4 @@
 
 (provide 'universal-sidecar-roam)
 
-;;; roam-sidecar.el ends here
+;;; universal-sidecar-roam.el ends here
