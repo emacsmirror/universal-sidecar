@@ -36,7 +36,7 @@
 
 ;;; Basic "tail of buffer" section
 
-(defun universal-sidecar-resolve-buffer (buffer)
+(defun universal-sidecar-sections-resolve-buffer (buffer)
   "Resolve BUFFER to an actual buffer object.
 
 If BUFFER is a buffer, return, if it's a string, use
@@ -48,7 +48,7 @@ it."
    ((symbolp buffer) (symbol-value buffer))
    ((functionp buffer) (funcall buffer))))
 
-(defun universal-sidecar-buffer-tail (buffer n)
+(defun universal-sidecar-sections-buffer-tail (buffer n)
   "Get the last N lines from BUFFER, return nil if BUFFER is empty."
   (unless (= 0 (buffer-size buffer))
     (with-current-buffer buffer
@@ -63,8 +63,8 @@ it."
 Note: SHOW-BUFFER may be a buffer, string, or function."
   (when (and (stringp title)
              (integerp n-lines))
-    (when-let* ((show-buffer (universal-sidecar-resolve-buffer show-buffer))
-                (contents (universal-sidecar-buffer-tail show-buffer n-lines)))
+    (when-let* ((show-buffer (universal-sidecar-sections-resolve-buffer show-buffer))
+                (contents (universal-sidecar-sections-buffer-tail show-buffer n-lines)))
       (universal-sidecar-insert-section tail-buffer-section title
         (with-current-buffer sidecar
           (insert contents))))))
