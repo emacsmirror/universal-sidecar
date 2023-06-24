@@ -104,7 +104,7 @@ This section could be added in any of the following ways:
 
 ## Using Org-Roam Buffer Sections
 
-The additional file `roam-sidecar.el` can be used to show sections from the `org-roam-mode` buffer in `universal-sidecar`.
+The additional file `universal-sidecar-roam.el` can be used to show sections from the `org-roam-mode` buffer in `universal-sidecar`.
 This can be done either through manual use of the `universal-sidecar-roam-section` function, or through taking an existing configuration (`org-roam-mode-sections`).
 
 To use `universal-sidecar-roam-section`, a minimum configuration is:
@@ -119,7 +119,7 @@ Finally, your sections can be added en-masse with:
 
 ```elisp
 (setq universal-sidecar-sections
-      (universal-sidecar-convert-roam-sections org-roam-mode-sections))
+      (universal-sidecar-roam-convert-roam-sections org-roam-mode-sections))
 ```
 
 ## Elfeed Related Papers Sections
