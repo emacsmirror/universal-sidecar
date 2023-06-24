@@ -27,6 +27,7 @@
 
 ;;; Commentary:
 ;;
+;; This is a collection of miscellaneous sections for `universal-sidecar'.
 
 ;;; Code:
 
