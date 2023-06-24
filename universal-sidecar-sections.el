@@ -42,7 +42,7 @@ If BUFFER is a buffer, return, if it's a string, use
 `get-buffer', if a symbol, get its value, and if a function, call
 it."
   (cond
-   ((bufferp buffer) show-buffer)
+   ((bufferp buffer) buffer)
    ((stringp buffer) (get-buffer buffer))
    ((symbolp buffer) (symbol-value buffer))
    ((functionp buffer) (funcall buffer))))
