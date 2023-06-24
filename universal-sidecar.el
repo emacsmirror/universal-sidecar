@@ -162,7 +162,8 @@
   "Customization for universal-sidecar, showing relevant information for the focused buffer."
   :group 'convenience
   :prefix "universal-sidecar-"
-  :link '(url-link :tag "Sourcehut" "https://git.sr.ht/~swflint/universal-sidecar"))
+  :link '(url-link :tag "Sourcehut" "https://git.sr.ht/~swflint/universal-sidecar")
+  :link '(emacs-library-link :tag "Library Source" "universal-sidecar.el"))
 
 (defcustom universal-sidecar-buffer-name-format "*sidecar* (%F)"
   "Format for universal sidecar name.
