@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 0.5.0
+;; Version: 1.0.0
 ;; Package-Requires: ((emacs "26.1") (universal-sidecar "1.0.0") (org-roam "2.0.0"))
 
 ;;; Commentary:
@@ -44,7 +44,7 @@
       (with-current-buffer sidecar
         (apply roam-section (cons node args))))))
 
-(defun universal-sidecar-convert-roam-sections (sections-definition)
+(defun universal-sidecar-roam-convert-roam-sections (sections-definition)
   "Convert SECTIONS-DEFINITION to `universal-sidecar-org-section'."
   (mapcar #'(lambda (defn)
               (if (listp defn)
@@ -52,6 +52,6 @@
                 (list 'universal-sidecar-roam-section defn)))
           sections-definition))
 
-(provide 'roam-sidecar)
+(provide 'universal-sidecar-roam)
 
 ;;; roam-sidecar.el ends here
