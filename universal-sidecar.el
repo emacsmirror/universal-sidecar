@@ -293,7 +293,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                         (universal-sidecar-get-buffer)))
            (buffer (or buffer
                        (if-let ((buf (window-buffer (selected-window)))
-                                (_buffer-is-sidecar-p (equal buf sidecar)))
+                                (buffer-is-sidecar-p (equal buf sidecar)))
                            (with-current-buffer sidecar universal-sidecar-current-buffer)
                          buf))))
       (with-current-buffer sidecar
@@ -356,7 +356,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 (defun universal-sidecar-unadvise-commands ()
   "Unadvise commands that update the sidecar buffer."
   (dolist (command-spec universal-sidecar-advise-commands)
-    (let ((command (or (and (listp command-spec) (first command-spec))
+    (let ((command (or (and (listp command-spec) (car command-spec))
                        command-spec)))
       (cond
        ((advice-member-p #'universal-sidecar-command-advice
@@ -401,7 +401,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 
 (cl-defun universal-sidecar--generate-major-modes-expression (major-modes)
   "Generate the expression to check if the selected BUFFER is one of MAJOR-MODES."
-  `(derived-mode-p ,@(mapcar #'(lambda (mode) `',mode)
+  `(derived-mode-p ,@(mapcar (lambda (mode) `',mode)
                              (or (and (listp major-modes)
                                       major-modes)
                                  (list major-modes)))))
@@ -445,6 +445,7 @@ DOCSTRING for the generated function."
                                 `(progn ,@body-no-docstring))))
     `(cl-defun ,name (buffer sidecar &key ,@args-list &allow-other-keys)
        ,docstring
+       (ignore buffer sidecar)
        ,body-with-predicate)))
 
 
