@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((emacs "26.1") (universal-sidecar "1.0.0") (org-roam "2.0.0"))
 
 ;;; Commentary:
@@ -30,6 +30,10 @@
 ;;
 ;; (setq universal-sidecar-sections
 ;;       (universal-sidecar-roam-convert-roam-sections org-roam-mode-sections))
+;;
+;; Additionally, the `universal-sidecar-buffer-id-formatters' variable
+;; can have a "node title or buffer name" formatter, using the
+;; `universal-sidecar-roam-buffer-name' function.
 
 (require 'org-roam-node)
 (require 'universal-sidecar)
@@ -51,6 +55,15 @@
                   (cons 'universal-sidecar-roam-section defn)
                 (list 'universal-sidecar-roam-section defn)))
           sections-definition))
+
+(defun universal-sidecar-roam-buffer-name (&optional buffer)
+  "Get BUFFER name, title if is a Roam node."
+  (let ((buffer (or buffer (current-buffer))))
+    (with-current-buffer buffer
+      (if-let ((_derived (derived-mode-p 'org-mode))
+               (node (org-roam-node-at-point nil)))
+          (org-roam-node-title node)
+        (buffer-name)))))
 
 (provide 'universal-sidecar-roam)
 

@@ -127,6 +127,8 @@ Finally, your sections can be added en-masse with:
       (universal-sidecar-roam-convert-roam-sections org-roam-mode-sections))
 ```
 
+Additionally, the `universal-sidecar-buffer-id-formatters` variable can have a "node title or buffer name" formatter, using the `universal-sidecar-roam-buffer-name` function.
+
 ## Elfeed Related Papers Sections
 
 The usecase that started this project: I wanted to be able to see possibly related papers that I've read when I read through the ArXiv RSS feeds.
