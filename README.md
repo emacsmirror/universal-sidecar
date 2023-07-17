@@ -40,6 +40,11 @@ However, if we want the opposite behavior (don't show renames), we'd configure i
 
 Note that using `add-to-list` is generally bad practice, as the sections will be run in the order they're present in the list.
 
+Next, the displayed buffer name is generated using `universal-sidecar-buffer-id-format` and `universal-sidecar-buffer-id-formatters`.
+These may be customized to your liking.
+Note: `universal-sidecar-buffer-id-formatters` is an alist of character/function pairs.
+The functions should take as their first (and only mandatory) argument the buffer for which the sidecar is being displayed.
+
 Finally, sidecar buffers are displayed using `display-window`.
 This means that how the buffer is displayed is easily configurable from `display-buffer-alist`.
 The author's configuration is shown below as an example.
