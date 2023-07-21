@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.2.4
+;; Version: 1.2.5
 ;; Package-Requires: ((emacs "25.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -329,34 +329,34 @@ If FRAME is nil, use `selected-frame'."
 If BUFFER is non-nil, use the currently focused buffer.
 If SIDECAR is non-nil, use sidecar for the current frame."
   (interactive)
-  (when (universal-sidecar-visible-p)
-    (let* ((sidecar (or sidecar
-                        (universal-sidecar-get-buffer)))
-           (buffer (or buffer
-                       (if-let ((buf (window-buffer (selected-window)))
-                                (buffer-is-sidecar-p (equal buf sidecar)))
-                           (with-current-buffer sidecar universal-sidecar-current-buffer)
-                         buf))))
-      (with-current-buffer sidecar
-        (let ((inhibit-read-only t))
-          (universal-sidecar-buffer-mode)
-          (erase-buffer)
-          (setq-local mode-line-buffer-identification (universal-sidecar-format-buffer-id buffer))
-          (setq-local universal-sidecar-current-buffer buffer)
-          (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
-          (dolist (section universal-sidecar-sections)
-            (pcase section
-              ((pred functionp)
-               (ignore-errors
-                 (funcall section buffer sidecar)))
-              (`(,section . ,args)
-               (ignore-errors
-                 (apply section (append (list buffer sidecar)
-                                        args))))
-              (_
-               (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
-          (goto-char 0))))))
-
+  (save-mark-and-excursion
+    (when (universal-sidecar-visible-p)
+      (let* ((sidecar (or sidecar
+                          (universal-sidecar-get-buffer)))
+             (buffer (or buffer
+                         (if-let ((buf (window-buffer (selected-window)))
+                                  (buffer-is-sidecar-p (equal buf sidecar)))
+                             (with-current-buffer sidecar universal-sidecar-current-buffer)
+                           buf))))
+        (with-current-buffer sidecar
+          (let ((inhibit-read-only t))
+            (universal-sidecar-buffer-mode)
+            (erase-buffer)
+            (setq-local mode-line-buffer-identification (universal-sidecar-format-buffer-id buffer))
+            (setq-local universal-sidecar-current-buffer buffer)
+            (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
+            (dolist (section universal-sidecar-sections)
+              (pcase section
+                ((pred functionp)
+                 (ignore-errors
+                   (funcall section buffer sidecar)))
+                (`(,section . ,args)
+                 (ignore-errors
+                   (apply section (append (list buffer sidecar)
+                                          args))))
+                (_
+                 (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
+            (goto-char 0)))))))
 
 ;;; Updating the Sidecar
 
@@ -420,8 +420,9 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 (defun universal-sidecar-refresh-all ()
   "Refresh all sidecar buffers."
   (dolist (frame (frame-list))
-    (with-selected-frame frame
-      (universal-sidecar-refresh))))
+    (save-mark-and-excursion
+      (with-selected-frame frame
+        (universal-sidecar-refresh)))))
 
 (defun universal-sidecar-insinuate ()
   "Insinuate (i.e., enable) automatic refresh of sidecars."
