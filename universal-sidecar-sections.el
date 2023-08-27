@@ -56,14 +56,14 @@ it."
       (beginning-of-line)
       (string-trim (buffer-substring (point) (point-max))))))
 
-(universal-sidecar-define-section tail-buffer-section (show-buffer n-lines title) ()
-  "Show N-LINES of SHOW-BUFFER in a sidecar with TITLE.
+(universal-sidecar-define-section tail-buffer-section (shown-buffer n-lines title) ()
+  "Show N-LINES of SHOWN-BUFFER in a sidecar with TITLE.
 
-Note: SHOW-BUFFER may be a buffer, string, or function."
+Note: SHOWN-BUFFER may be a buffer, string, or function."
   (when (and (stringp title)
              (integerp n-lines))
-    (when-let* ((show-buffer (universal-sidecar-sections-resolve-buffer show-buffer))
-                (contents (universal-sidecar-sections-buffer-tail show-buffer n-lines)))
+    (when-let* ((shown-buffer (universal-sidecar-sections-resolve-buffer shown-buffer))
+                (contents (universal-sidecar-sections-buffer-tail shown-buffer n-lines)))
       (universal-sidecar-insert-section tail-buffer-section title
         (with-current-buffer sidecar
           (insert contents))))))
