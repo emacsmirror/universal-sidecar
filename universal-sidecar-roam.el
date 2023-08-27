@@ -1,11 +1,11 @@
-;;; roam-sidecar.el --- Integrate universal-sidecar and org-roam -*- lexical-binding: t -*-
+;;; universal-sidecar-roam.el --- Integrate universal-sidecar and org-roam -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 Samuel W. Flint <me@samuelwflint.com>
 
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.1
+;; Version: 1.0.2
 ;; Package-Requires: ((emacs "26.1") (universal-sidecar "1.0.0") (org-roam "2.0.0"))
 
 ;;; Commentary:
@@ -60,10 +60,11 @@
   "Get BUFFER name, title if is a Roam node."
   (let ((buffer (or buffer (current-buffer))))
     (with-current-buffer buffer
-      (if-let ((_derived (derived-mode-p 'org-mode))
+      (if-let ((buffer-name (buffer-name))
+               (_derived (derived-mode-p 'org-mode))
                (node (org-roam-node-at-point nil)))
-          (org-roam-node-title node)
-        (buffer-name)))))
+          (or (org-roam-node-title node) buffer-name)
+        buffer-name))))
 
 (provide 'universal-sidecar-roam)
 
