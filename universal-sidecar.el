@@ -192,7 +192,8 @@ Must contain %F, which is a string describing the current frame."
 (defcustom universal-sidecar-buffer-id-format "*sidecar* (%b)"
   "Format for displayed name of universal sidecar.
 
-Formatting is done by the format specifiers in `universal-sidecar-buffer-id-formatters'."
+Formatting is done by the format specifiers in
+`universal-sidecar-buffer-id-formatters'."
   :group 'universal-sidecar
   :type 'string)
 
