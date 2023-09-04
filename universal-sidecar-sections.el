@@ -56,7 +56,7 @@ it."
       (beginning-of-line)
       (string-trim (buffer-substring (point) (point-max))))))
 
-(universal-sidecar-define-section tail-buffer-section (shown-buffer n-lines title) ()
+(universal-sidecar-define-section universal-sidecar-tail-buffer-section (shown-buffer n-lines title) ()
   "Show N-LINES of SHOWN-BUFFER in a sidecar with TITLE.
 
 Note: SHOWN-BUFFER may be a buffer, string, or function."

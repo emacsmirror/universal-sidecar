@@ -148,7 +148,7 @@ These are found in `universal-sidecar-sections.el`.
 
 ### Buffer Tail
 
-`(tail-buffer-section :show-buffer :n-lines :title)`
+`(universal-sidecar-tail-buffer-section :show-buffer :n-lines :title)`
 
 Show the last `n-lines` of `show-buffer` in the sidecar with `title`.
 If `show-buffer` doesn't exist, or is empty, no section will be shown.
