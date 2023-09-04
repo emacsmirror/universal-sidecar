@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.2.6
+;; Version: 1.2.7
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -169,6 +169,8 @@
 ;;
 ;; v1.2.6 (2023-09-04): Fix type error in
 ;; `universal-sidecar-format-buffer-id'.
+;;
+;; v1.2.7 (2023-09-04): Fix a byte compilation issue.
 
 ;;; Code:
 
@@ -513,6 +515,7 @@ Note, this macro ensures that a separating double-newline is
 inserted by default."
   (declare (indent 2))
   `(magit-insert-section ,name (universal-sidecar-section)
+     (ignore ,name)
      (magit-insert-heading ,header)
      ,@body
      (insert "\n\n")))
