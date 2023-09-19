@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.3.0
+;; Version: 1.3.1
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -359,13 +359,13 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                  (condition-case err
                      (funcall section buffer sidecar)
                    (t
-                    (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error (buffer-name buffer)))))
+                    (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error))))
                 (`(,section . ,args)
                  (condition-case err
                      (apply section (append (list buffer sidecar)
                                             args))
                    (t
-                    (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error (buffer-name buffer)))))
+                    (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error))))
                 (_
                  (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
             (goto-char 0)))))))
