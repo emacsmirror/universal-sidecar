@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.3
+;; Version: 1.0.4
 ;; Package-Requires: ((emacs "26.1") (universal-sidecar "1.0.0") (org-roam "2.0.0"))
 
 ;;; Commentary:
@@ -61,10 +61,11 @@
   "Get BUFFER name, title if is a Roam node."
   (let ((buffer (or buffer (current-buffer))))
     (with-current-buffer buffer
-      (if-let ((buffer-name (buffer-name))
-               (_derived (derived-mode-p 'org-mode))
-               (node (org-roam-node-at-point nil)))
-          (or (org-roam-node-title node) buffer-name)
+      (if-let* ((buffer-name (buffer-name))
+                (_derived (derived-mode-p 'org-mode))
+                (node (org-roam-node-at-point nil))
+                (title (org-roam-node-title node)))
+          title
         buffer-name))))
 
 (provide 'universal-sidecar-roam)
