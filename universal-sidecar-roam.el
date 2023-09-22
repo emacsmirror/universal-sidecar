@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.2
+;; Version: 1.0.3
 ;; Package-Requires: ((emacs "26.1") (universal-sidecar "1.0.0") (org-roam "2.0.0"))
 
 ;;; Commentary:
@@ -43,8 +43,9 @@
 (defun universal-sidecar-roam-section (buffer sidecar roam-section &rest args)
   "Run ROAM-SECTION with ARGS for BUFFER in SIDECAR."
   (when (with-current-buffer buffer (derived-mode-p 'org-mode))
-    (when-let ((node (with-current-buffer buffer (org-roam-node-at-point nil))))
-      (universal-sidecar-set-title (propertize (org-roam-node-title node) 'font-lock-face 'bold))
+    (when-let* ((node (with-current-buffer buffer (org-roam-node-at-point nil)))
+                (title  (org-roam-node-title node)))
+      (universal-sidecar-set-title (propertize title 'font-lock-face 'bold))
       (with-current-buffer sidecar
         (apply roam-section (cons node args))))))
 
