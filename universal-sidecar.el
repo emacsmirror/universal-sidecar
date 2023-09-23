@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.3.1
+;; Version: 1.3.2
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -356,12 +356,12 @@ If SIDECAR is non-nil, use sidecar for the current frame."
             (dolist (section universal-sidecar-sections)
               (pcase section
                 ((pred functionp)
-                 (condition-case err
+                 (condition-case-unless-debug err
                      (funcall section buffer sidecar)
                    (t
                     (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error))))
                 (`(,section . ,args)
-                 (condition-case err
+                 (condition-case-unless-debug err
                      (apply section (append (list buffer sidecar)
                                             args))
                    (t
