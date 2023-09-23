@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.3.2
+;; Version: 1.4.0
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -105,6 +105,13 @@
 ;;                    (window-parameters . ((no-other-window . t)
 ;;                                          (no-delete-other-windows . t)))))
 ;;
+;;
+;; Finally, errors in sections or section definitions are by default
+;; logged to the *Warnings* buffer.  This is done in a way to allow
+;; for debugging.  Moreover, the logging can be disabled by setting
+;; `universal-sidecar-inhibit-section-error-log' to non-nil, in which
+;; case (unless debugging is enabled) these errors will be ignored.
+;;
 ;;; Section Functions
 ;;
 ;; The basic installation of `universal-sidecar' does not include any
@@ -173,6 +180,10 @@
 ;; v1.2.7 (2023-09-04): Fix a byte compilation issue.
 ;;
 ;; v1.3.0 (2023-09-14): Log errors, don't ignore them.
+;;
+;; v1.4.0 (2023-09-22): Add
+;; `universal-sidecar-inhibit-section-error-log' to control when
+;; sidecar section errors are logged.
 
 ;;; Code:
 
@@ -257,6 +268,11 @@ or `(symbol location)' lists.  Location should be `:after',
   "How many seconds Emacs should be idle before sidecars are auto-refreshed."
   :group 'universal-sidecar
   :type 'number)
+
+(defcustom universal-sidecar-inhibit-section-error-log nil
+  "When non-nil, broken sections will not log to the *Warnings* buffer."
+  :group 'universal-sidecar
+  :type 'boolean)
 
 
 ;;; Sidecar Buffer Mode
@@ -354,20 +370,18 @@ If SIDECAR is non-nil, use sidecar for the current frame."
             (setq-local universal-sidecar-current-buffer buffer)
             (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
             (dolist (section universal-sidecar-sections)
-              (pcase section
-                ((pred functionp)
-                 (condition-case-unless-debug err
-                     (funcall section buffer sidecar)
-                   (t
-                    (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error))))
-                (`(,section . ,args)
-                 (condition-case-unless-debug err
-                     (apply section (append (list buffer sidecar)
-                                            args))
-                   (t
-                    (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error))))
-                (_
-                 (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section))))
+              (condition-case-unless-debug err
+                  (pcase section
+                    ((pred functionp)
+                     (funcall section buffer sidecar))
+                    (`(,section . ,args)
+                     (apply section (append (list buffer sidecar) args)))
+                    (_
+                     (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section)))
+                (t
+                 (unless universal-sidecar-inhibit-section-error-log
+                   (display-warning 'universal-sidecar (format "Error encountered in displaying section: %S" err) :error))))
+              )
             (goto-char 0)))))))
 
 ;;; Updating the Sidecar

@@ -62,6 +62,10 @@ In particular, using the `display-buffer-in-side-window` display action is sugge
                                      (no-delete-other-windows . t)))))
 ```
 
+Finally, errors in sections or section definitions are by default logged to the `*Warnings*` buffer.
+This is done in a way to allow for debugging.
+Moreover, the logging can be disabled by setting `universal-sidecar-inhibit-section-error-log` to non-nil, in which case (unless debugging is enabled) these errors will be ignored.
+
 ## Section Functions
 
 The basic installation of `universal-sidecar` does not include any section functions.
