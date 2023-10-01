@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 0.5.0
+;; Version: 1.0.0
 ;; Package-Requires: ((emacs "25.1") (universal-sidecar "1.0.0") (bibtex-completion "1.0.0") (elfeed "3.4.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -51,7 +51,7 @@
 
 ;;; Customization
 
-(defcustom elfeed-related-papers-citation-formatter #'bibtex-completion-apa-format-reference
+(defcustom universal-sidecar-elfeed-related-citation-formatter #'bibtex-completion-apa-format-reference
   "How should a related paper be formatted for display?
 
 By default, the APA formatting from `bibtex-completion' is used.
@@ -64,18 +64,18 @@ return a fully-formatted string (font properties may be set using
 
 ;;; Select formatting candidates
 
-(defun universal-sidecar-elfeed-related--author-regexp (authors)
+(defun universal-sidecar-elfeed-related--author-regexp (authors-list)
   "Generate a regular expression to match AUTHORS in bibtex entries."
-  (regexp-opt (mapcar #'(lambda (author)
-                          (car (last (split-string (plist-get :name author)))))
-                      authors)
+  (regexp-opt (mapcar (lambda (author)
+                        (car (last (split-string (plist-get :name author)))))
+                      authors-list)
               'words))
 
 (defun universal-sidecar-elfeed-related-search-candidates (regexp)
   "List entry keys which match REGEXP."
   (mapcar #'cdr (cl-remove-if-not
-                 #'(lambda (entry)
-                     (string-match regexp (car entry)))
+                 (lambda (entry)
+                   (string-match regexp (car entry)))
                  (bibtex-completion-candidates))))
 
 
