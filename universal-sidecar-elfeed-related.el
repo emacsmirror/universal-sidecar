@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((emacs "25.1") (universal-sidecar "1.0.0") (bibtex-completion "1.0.0") (elfeed "3.4.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -65,7 +65,7 @@ return a fully-formatted string (font properties may be set using
 ;;; Select formatting candidates
 
 (defun universal-sidecar-elfeed-related--author-regexp (authors-list)
-  "Generate a regular expression to match AUTHORS in bibtex entries."
+  "Generate a regular expression to match AUTHORS-LIST in bibtex entries."
   (regexp-opt (mapcar (lambda (author)
                         (car (last (split-string (plist-get :name author)))))
                       authors-list)
