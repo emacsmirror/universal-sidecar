@@ -51,10 +51,10 @@
 
 (defun universal-sidecar-roam-convert-roam-sections (sections-definition)
   "Convert SECTIONS-DEFINITION to `universal-sidecar-org-section'."
-  (mapcar #'(lambda (defn)
-              (if (listp defn)
-                  (cons 'universal-sidecar-roam-section defn)
-                (list 'universal-sidecar-roam-section defn)))
+  (mapcar (lambda (defn)
+            (if (listp defn)
+                (cons 'universal-sidecar-roam-section defn)
+              (list 'universal-sidecar-roam-section defn)))
           sections-definition))
 
 (defun universal-sidecar-roam-buffer-name (&optional buffer)
@@ -62,7 +62,7 @@
   (let ((buffer (or buffer (current-buffer))))
     (with-current-buffer buffer
       (if-let* ((buffer-name (buffer-name))
-                (_derived (derived-mode-p 'org-mode))
+                (buffer-org-derived-p (derived-mode-p 'org-mode))
                 (node (org-roam-node-at-point nil))
                 (title (org-roam-node-title node)))
           title
