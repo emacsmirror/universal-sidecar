@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.4.0
+;; Version: 1.4.1
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -238,9 +238,9 @@ A section may be described as either a function or a function and
 arguments to be passed after the BUFFER-FOR-SIDECAR and SIDECAR
 arguments."
   :group 'universal-sidecar
-  :type '(repeat (choice (function :tag "Function")
+  :type '(repeat (choice (symbol :tag "Function")
                          (list :tag "Function with arguments"
-                               (function :tag "Function")
+                               (symbol :tag "Function")
                                (repeat :tag "Arguments"
                                        :inline t
                                        (sexp :tag "Argument"))))))
