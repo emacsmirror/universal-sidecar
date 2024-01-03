@@ -1,11 +1,11 @@
 ;;; universal-sidecar.el --- A universal sidecar buffer -*- lexical-binding: t -*-
 
-;; Copyright (C) 2023 Samuel W. Flint <me@samuelwflint.com>
+;; Copyright (C) 2023-2024 Samuel W. Flint <me@samuelwflint.com>
 
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.4.2
+;; Version: 1.4.3
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -55,7 +55,10 @@
 ;; to the `focus-in-hook', and will set an idle timer to refresh all
 ;; sidecar buffers (idle time configured with
 ;; `universal-sidecar-refresh-time').  Buffers can be ignored by
-;; modifying the `universal-sidecar-ignore-buffer-regexp'.
+;; modifying the `universal-sidecar-ignore-buffer-regexp', or using
+;; the (irregular) `universal-sidecar-ignore-buffer-functions' hook.
+;; This hook will be run with an argument (the buffer) and run until a
+;; non-nil result.
 ;;
 ;;;; Configuration
 ;;
@@ -185,6 +188,10 @@
 ;; v1.4.0 (2023-09-22): Add
 ;; `universal-sidecar-inhibit-section-error-log' to control when
 ;; sidecar section errors are logged.
+;;
+;; v1.4.3 (2024-01-03): Buffers can now be ignored using the
+;; `universal-sidecar-ignore-buffer-regexp' and
+;; `universal-sidecar-ignore-buffer-functions' variables.
 
 ;;; Code:
 
@@ -280,6 +287,14 @@ or `(symbol location)' lists.  Location should be `:after',
   :group 'universal-sidecar
   :type 'regexp)
 
+(defcustom universal-sidecar-ignore-buffer-functions (list)
+  "Irregular hook to determine if a buffer should be ignored.
+
+Return non-nil if the buffer should be ignored.  Hook will be run
+until non-nil."
+  :group 'universal-sidecar
+  :type 'hook)
+
 
 ;;; Sidecar Buffer Mode
 
@@ -365,9 +380,12 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                           (universal-sidecar-get-buffer)))
              (buffer (or buffer
                          (if-let ((buf (window-buffer (selected-window)))
-                                  (buffer-is-ignored-p (or (equal buf sidecar)
-                                                           (string-match-p universal-sidecar-ignore-buffer-regexp
-                                                                           (buffer-name buf)))))
+                                  (buffer-is-ignored-p
+                                   (or (equal buf sidecar)
+                                       (string-match-p universal-sidecar-ignore-buffer-regexp
+                                                       (buffer-name buf))
+                                       (run-hook-with-args-until-success 'universal-sidecar-ignore-buffer-functions
+                                                                         buf))))
                              (with-current-buffer sidecar universal-sidecar-current-buffer)
                            buf))))
         (with-current-buffer sidecar
