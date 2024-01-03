@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.4.1
+;; Version: 1.4.2
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -54,7 +54,8 @@
 ;; `universal-sidecar-insinuate' will add `universal-sidecar-refresh'
 ;; to the `focus-in-hook', and will set an idle timer to refresh all
 ;; sidecar buffers (idle time configured with
-;; `universal-sidecar-refresh-time').
+;; `universal-sidecar-refresh-time').  Buffers can be ignored by
+;; modifying the `universal-sidecar-ignore-buffer-regexp'.
 ;;
 ;;;; Configuration
 ;;
@@ -274,6 +275,11 @@ or `(symbol location)' lists.  Location should be `:after',
   :group 'universal-sidecar
   :type 'boolean)
 
+(defcustom universal-sidecar-ignore-buffer-regexp (rx  " *")
+  "Pattern describing buffers to ignore on automatic refresh."
+  :group 'universal-sidecar
+  :type 'regexp)
+
 
 ;;; Sidecar Buffer Mode
 
@@ -359,7 +365,9 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                           (universal-sidecar-get-buffer)))
              (buffer (or buffer
                          (if-let ((buf (window-buffer (selected-window)))
-                                  (buffer-is-sidecar-p (equal buf sidecar)))
+                                  (buffer-is-ignored-p (or (equal buf sidecar)
+                                                           (string-match-p universal-sidecar-ignore-buffer-regexp
+                                                                           (buffer-name buf)))))
                              (with-current-buffer sidecar universal-sidecar-current-buffer)
                            buf))))
         (with-current-buffer sidecar

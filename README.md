@@ -18,6 +18,7 @@ Additionally, to make sure that the sidecar buffer is updated, it's necessary to
 This can be done automatically using the `universal-sidecar-insinuate` function, which will advise functions listed in `universal-sidecar-advise-commands`.
 This may be undone with `universal-sidecar-uninsinuate`.
 Additionally, `universal-sidecar-insinuate` will add `universal-sidecar-refresh` to the `focus-in-hook`, and will set an idle timer to refresh all sidecar buffers (idle time configured with `universal-sidecar-refresh-time`).
+Buffers can be ignored by modifying the `universal-sidecar-ignore-buffer-regexp`.
 
 ### Configuration
 
