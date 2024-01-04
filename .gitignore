@@ -7,6 +7,7 @@
 !.gitkeep
 !.dir-locals.el
 !.reuse
+!*.license
 
 # Emacs Stuff
 *~
