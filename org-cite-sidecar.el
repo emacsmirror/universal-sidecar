@@ -98,29 +98,29 @@ HEADER.
 
 Note: It is necessary to also customize the location of locales
 data, `org-cite-sidecar-locales'."
-  (with-current-buffer buffer
-    (let* ((data-sources (org-cite-list-bibliography-files))
-           (item-getter (citeproc-hash-itemgetter-from-any data-sources))
-           (locale-getter (citeproc-locale-getter-from-dir org-cite-sidecar-locales))
-           (processor (citeproc-create (file-name-concat org-cite-sidecar-styles style)
-                                       item-getter locale-getter))
-           (references (org-element-map (org-element-parse-buffer) 'citation-reference
-                         (lambda (citation)
-                           (org-element-property :key citation)))))
-      (when references
-        (citeproc-add-uncited references processor)
-        (with-current-buffer sidecar
-          (universal-sidecar-insert-section org-citations header
-            (insert (with-temp-buffer
-                      (org-mode)
-                      (setq-local org-fold-core-style 'overlays)
-                      (insert (car (citeproc-render-bib processor 'org 'auto 'nil)))
-                      (save-match-data
-                        (goto-char (point-min))
-                        (while (re-search-forward org-target-regexp nil t)
-                          (replace-match "")))
-                      (font-lock-ensure)
-                      (buffer-string)))))))))
+  (when-let* ((data-sources (org-cite-list-bibliography-files))
+              (references (org-element-map (with-current-buffer buffer
+                                             (org-element-parse-buffer))
+                              'citation-reference
+                            (lambda (citation)
+                              (org-element-property :key citation))))
+              (item-getter (citeproc-hash-itemgetter-from-any data-sources))
+              (locale-getter (citeproc-locale-getter-from-dir org-cite-sidecar-locales))
+              (processor (citeproc-create (file-name-concat org-cite-sidecar-styles style)
+                                          item-getter locale-getter)))
+    (citeproc-add-uncited references processor)
+    (with-current-buffer sidecar
+      (universal-sidecar-insert-section org-citations header
+        (insert (with-temp-buffer
+                  (org-mode)
+                  (setq-local org-fold-core-style 'overlays)
+                  (insert (car (citeproc-render-bib processor 'org 'auto 'nil)))
+                  (save-match-data
+                    (goto-char (point-min))
+                    (while (re-search-forward org-target-regexp nil t)
+                      (replace-match "")))
+                  (font-lock-ensure)
+                  (buffer-string)))))))
 
 
 (provide 'org-cite-sidecar)
