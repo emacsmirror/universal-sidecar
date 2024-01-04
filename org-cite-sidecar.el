@@ -117,7 +117,7 @@ data, `org-cite-sidecar-locales'."
                       (insert (car (citeproc-render-bib processor 'org 'auto 'nil)))
                       (save-match-data
                         (goto-char (point-min))
-                        (while (re-search-forward org-target-regexp)
+                        (while (re-search-forward org-target-regexp nil t)
                           (replace-match "")))
                       (font-lock-ensure)
                       (buffer-string)))))))))
