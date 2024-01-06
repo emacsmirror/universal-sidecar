@@ -177,6 +177,26 @@ Additionally, there are two arguments to the section which are not exposed as cu
    Default is `ieee.csl`.
  - `:header` allows you to change the header of the section from the default "References".
 
+## Ebib Formatted Reference Section
+
+This package can be used to show a formatted reference to the bib entry at point in `ebib`.
+This is done using the `citeproc` library and can be shown flexibly.
+A minimum configuration is shown below:
+
+```elisp
+(setq ebib-sidecar-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
+      ebib-sidecar-styles "~/.emacs.d/csl-data/styles/")
+(add-to-list 'universal-sidecar-sections 'ebib-sidecar)
+```
+
+It is important to set the `ebib-sidecar-locales` and `ebib-sidecar-styles` variables to the directories where you have cloned the CSL locale and style data repositories (see docstrings for links).
+
+Additionally, there are two arguments to the section which are not exposed as customization variables:
+
+ - `:style` allows you to select a prefered CSL style within `ebib-sidecar-styles`.
+   Default is `ieee.csl`.
+- `:header` allows you to change the header of the section from the default "Reference:".
+
 ## Basic and Example Sections
 
 These are found in `universal-sidecar-sections.el`.
