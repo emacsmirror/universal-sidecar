@@ -201,6 +201,9 @@
 ;; v1.4.3 (2024-01-03): Buffers can now be ignored using the
 ;; `universal-sidecar-ignore-buffer-regexp' and
 ;; `universal-sidecar-ignore-buffer-functions' variables.
+;;
+;; v1.5.0 (2024-01-06): The macro `universal-sidecar-fontify-as' is
+;; now available to fontify code as if in some major mode.
 
 ;;; Code:
 
