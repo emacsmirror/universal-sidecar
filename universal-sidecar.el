@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.4.3
+;; Version: 1.5.0
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -167,6 +167,15 @@
 ;;     (add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions"))
 ;;     (add-to-list 'universal-sidecar-sections '(fortune-section :title "O Fortuna!"))
 ;;     (add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions" :title "Random Definition"))
+;;
+;; Finally, section text can be formatted and fontified as if it was
+;; in some other mode, for instance, `org-mode' using
+;; `universal-sidecar-fontify-as'.  An example is shown below.
+;;
+;;     (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+;;       (some-function-that-generates-org-text)
+;;       (some-post-processing-of-org-text))
+;;
 ;;
 ;;;; Changelog
 ;;
@@ -565,6 +574,26 @@ inserted by default."
      (magit-insert-heading ,header)
      ,@body
      (insert "\n\n")))
+
+(cl-defmacro universal-sidecar-fontify-as (mode (&rest local-bindings) string-expression &body after-insert)
+  "Fontify STRING-EXPRESSION as MODE.
+
+Before inserting results of STRING-EXPRESSION, LOCAL-BINDINGS are
+set via `setq-local'.  Note, LOCAL-BINDINGS should be of the
+form (VARIABLE VALUE-EXPRESSION).
+
+After inserting results of STRING-EXPRESSION, AFTER-INSERT is run."
+  (declare (indent 2))
+  (let ((local-bindings (mapcar (lambda (binding)
+                                  `(setq-local ,(nth 0 binding) ,(nth 1 binding)))
+                                local-bindings)))
+    `(with-temp-buffer
+       (,mode)
+       ,@local-bindings
+       (insert ,string-expression)
+       ,@after-insert
+       (font-lock-ensure)
+       (buffer-string))))
 
 (provide 'universal-sidecar)
 

@@ -113,6 +113,15 @@ This section could be added in any of the following ways:
 (add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions" :title "Random Definition"))
 ```
 
+Finally, section text can be formatted and fontified as if it was in some other mode, for instance, `org-mode` using `universal-sidecar-fontify-as`.
+An example is shown below.
+
+```elisp
+(universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+  (some-function-that-generates-org-text)
+  (some-post-processing-of-org-text))
+```
+
 ## Using Org-Roam Buffer Sections
 
 The additional file `universal-sidecar-roam.el` can be used to show sections from the `org-roam-mode` buffer in `universal-sidecar`.
