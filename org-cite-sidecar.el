@@ -7,7 +7,7 @@
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: bib, org
 ;; Version: 0.5.0
-;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.4.3"))
+;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -110,17 +110,13 @@ data, `org-cite-sidecar-locales'."
                                           item-getter locale-getter)))
     (citeproc-add-uncited references processor)
     (with-current-buffer sidecar
-      (universal-sidecar-insert-section org-citations header
-        (insert (with-temp-buffer
-                  (org-mode)
-                  (setq-local org-fold-core-style 'overlays)
-                  (insert (car (citeproc-render-bib processor 'org 'auto 'nil)))
+      (universal-sidecar-insert-section org-cite-sidecar header
+        (insert (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+                  (car (citeproc-render-bib processor 'org 'auto 'nil))
                   (save-match-data
                     (goto-char (point-min))
                     (while (re-search-forward org-target-regexp nil t)
-                      (replace-match "")))
-                  (font-lock-ensure)
-                  (buffer-string)))))))
+                      (replace-match "")))))))))
 
 
 (provide 'org-cite-sidecar)
