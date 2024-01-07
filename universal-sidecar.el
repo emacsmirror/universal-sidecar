@@ -418,8 +418,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
                      (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section)))
                 (t
                  (unless universal-sidecar-inhibit-section-error-log
-                   (display-warning 'universal-sidecar (format "Error encountered in displaying section %S: %S" section err) :error))))
-              )
+                   (display-warning 'universal-sidecar (format "Error encountered in displaying section %S: %S" section err) :error)))))
             (goto-char 0)))))))
 
 ;;; Updating the Sidecar
