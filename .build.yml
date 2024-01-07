@@ -3,23 +3,23 @@ packages:
   - emacs
 tasks:
   - setup: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -f build/package-install-prereqs
   - build-main: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar.el universal-sidecar-sections.el
   - build-roam-sidecar: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-roam.el
   - build-elfeed-score-sidecar: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-elfeed-score.el
   - build-elfeed-related-sidecar: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-elfeed-related.el
   - build-ebib-sidecar: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile ebib-sidecar.el
   - build-org-cite-sidecar: |
-      cd emacs universal-sidecar
+      cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile org-cite-sidecar.el
