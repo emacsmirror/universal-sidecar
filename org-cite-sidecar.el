@@ -29,7 +29,8 @@
 ;; and can be shown quite flexibly.  A minimum configuration is as
 ;; follows:
 ;;
-;; (setq org-cite-sidecar-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
+;; (setq org-cite-sidecar-locales "~/.emacs.d/csl-data/locales/"
+;;       ;; set to your directories for locale and style data
 ;;       org-cite-sidecar-styles "~/.emacs.d/csl-data/styles/")
 ;; (add-to-list 'universal-sidecar-sections 'org-cite-sidecar)
 ;;
