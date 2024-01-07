@@ -1,0 +1,18 @@
+image: alpine/edge
+packages:
+  - emacs
+tasks:
+  - setup: |
+      emacs --batch -l build/init.el -f build/package-install-prereqs
+  - build-main: |
+      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar.el universal-sidecar-sections.el
+  - build-roam-sidecar: |
+      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-roam.el
+  - build-elfeed-score-sidecar: |
+      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-elfeed-score.el
+  - build-elfeed-related-sidecar: |
+      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-elfeed-related.el
+  - build-ebib-sidecar: |
+      emacs --batch -l build/init.el -L . -f batch-byte-compile ebib-sidecar.el
+  - build-org-cite-sidecar: |
+      emacs --batch -l build/init.el -L . -f batch-byte-compile org-cite-sidecar.el
