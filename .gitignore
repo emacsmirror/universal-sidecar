@@ -8,7 +8,7 @@
 !.dir-locals.el
 !.reuse
 !*.license
-!*.build
+!*.build.yml
 
 # Emacs Stuff
 *~
