@@ -51,9 +51,10 @@
 ;;; Code:
 
 (require 'universal-sidecar)
+(require 'org)
+(require 'org-element)
 (require 'oc)
 (require 'ol)
-(require 'org-element)
 (require 'citeproc)
 
 
