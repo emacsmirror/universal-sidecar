@@ -6,5 +6,5 @@
 
 (defun build/package-install-prereqs ()
   (package-refresh-contents)
-  (dolist (pkg '(magit-section bibtex-completion elfeed elfeed-score org-roam citeproc ebib))
+  (dolist (pkg '(magit-section bibtex-completion elfeed elfeed-score org-roam citeproc ebib package-lint))
     (package-install pkg)))

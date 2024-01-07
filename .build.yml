@@ -1,10 +1,13 @@
-image: debian/testing
+image: nixos/unstable
 packages:
-  - emacs
+  - nixos.emacs
 tasks:
   - setup: |
       cd emacs-universal-sidecar
       emacs --batch -l build/init.el -f build/package-install-prereqs
+  - lint-all: |
+      cd emacs-universal-sidecar
+      emacs --batch -l build/init.el -f package-lint-batch-and-exit *.el
   - build-main: |
       cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar.el universal-sidecar-sections.el
