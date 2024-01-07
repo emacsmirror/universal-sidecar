@@ -2,6 +2,9 @@ image: nixos/unstable
 packages:
   - nixos.emacs
   - nixos.hut
+  - nixos.python3
+repositories:
+  - https://github.com/riscy/melpazoid
 tasks:
   - setup: |
       cd emacs-universal-sidecar
@@ -9,6 +12,21 @@ tasks:
   - lint-all: |
       cd emacs-universal-sidecar
       emacs --batch -l build/init.el -f package-lint-batch-and-exit *.el || exit 0
+  - melpazoid: |
+      cd melpazoid
+      export LOCAL_REPO='~/universal-sidecar/'
+      RECIPE=$(cat build/recipes/universal-sidecar) \
+          emacs --batch -l ~/universal-sidecar/build/init.el -l melpazoid/melpazoid.el 
+      RECIPE=$(cat build/recipes/universal-sidecar-elfeed-related) \
+          emacs --batch -l ~/universal-sidecar/build/init.el -l melpazoid/melpazoid.el 
+      RECIPE=$(cat build/recipes/universal-sidecar-elfeed-score) \
+          emacs --batch -l ~/universal-sidecar/build/init.el -l melpazoid/melpazoid.el 
+      RECIPE=$(cat build/recipes/universal-sidecar-roam) \
+          emacs --batch -l ~/universal-sidecar/build/init.el -l melpazoid/melpazoid.el 
+      RECIPE=$(cat build/recipes/ebib-sidecar) \
+          emacs --batch -l ~/universal-sidecar/build/init.el -l melpazoid/melpazoid.el 
+      RECIPE=$(cat build/recipes/org-cite-sidecar) \
+          emacs --batch -l ~/universal-sidecar/build/init.el -l melpazoid/melpazoid.el 
   - build-main: |
       cd emacs-universal-sidecar
       emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar.el universal-sidecar-sections.el
