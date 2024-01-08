@@ -38,4 +38,5 @@ tasks:
       mkdir -p ~/package-archive/
       emacs --batch -l ~/emacs-universal-sidecar/build/init.el -f build/build-packages
   - build-archive: |
-      tar czvf ~/package-archive.tar.gz ~/package-archive
+      cd ~/
+      tar czvf ~/package-archive.tar.gz package-archive/
