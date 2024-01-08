@@ -7,6 +7,7 @@ packages:
   - nixos.emacs
   - nixos.hut
   - nixos.python3
+  - nixos.reuse
 sources:
   - https://github.com/riscy/melpazoid
 artifacts:
@@ -15,6 +16,8 @@ tasks:
   - setup: |
       cd emacs-universal-sidecar
       emacs --batch -l build/init.el -f build/package-install-prereqs
+  - license-lint: |
+      reuse lint
   - lint-all: |
       cd emacs-universal-sidecar
       emacs --batch -l build/init.el -f package-lint-batch-and-exit *.el || exit 0
