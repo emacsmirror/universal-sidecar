@@ -5,6 +5,8 @@ packages:
   - nixos.python3
 sources:
   - https://github.com/riscy/melpazoid
+artifacts:
+  - package-archive.tar.gz
 tasks:
   - setup: |
       cd emacs-universal-sidecar
@@ -27,22 +29,8 @@ tasks:
           emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid.el
       RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/org-cite-sidecar) \
           emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid.el
-  - build-main: |
-      cd emacs-universal-sidecar
-      emacs --batch -l build/init.el -L . -f batch-byte-compile \
-          universal-sidecar.el universal-sidecar-sections.el
-  - build-roam-sidecar: |
-      cd emacs-universal-sidecar
-      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-roam.el
-  - build-elfeed-score-sidecar: |
-      cd emacs-universal-sidecar
-      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-elfeed-score.el
-  - build-elfeed-related-sidecar: |
-      cd emacs-universal-sidecar
-      emacs --batch -l build/init.el -L . -f batch-byte-compile universal-sidecar-elfeed-related.el
-  - build-ebib-sidecar: |
-      cd emacs-universal-sidecar
-      emacs --batch -l build/init.el -L . -f batch-byte-compile ebib-sidecar.el
-  - build-org-cite-sidecar: |
-      cd emacs-universal-sidecar
-      emacs --batch -l build/init.el -L . -f batch-byte-compile org-cite-sidecar.el
+  - build-packages: |
+      mkdir -p ~/package-archive/
+      emacs --batch -l ~/emacs-universal-sidecar/build/init.el -f build/build-packages
+  - build-archive: |
+      tar czvf ~/package-archive.tar.gz ~/package-archive
