@@ -16,6 +16,7 @@ tasks:
   - setup: |
       emacs --batch -l emacs-universal-sidecar/build/init.el -f build/package-install-prereqs
   - license-lint: |
+      cd emacs-universal-sidecar
       reuse lint
   - lint-all: |
       emacs --batch -l emacs-universal-sidecar/build/init.el -f package-lint-batch-and-exit emacs-universal-sidecar/*.el || exit 0
