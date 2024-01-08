@@ -13,7 +13,7 @@ sources:
 artifacts:
   - package-archive.tar.gz
 tasks:
-  - setup: |
+  - setup-emacs: |
       emacs --batch -l emacs-universal-sidecar/build/init.el -f build/package-install-prereqs
   - license-lint: |
       cd emacs-universal-sidecar
