@@ -1,6 +1,6 @@
-; SPDX-FileCopyrightText: 2024 Samuel W. Flint <me@samuelwflint.com>
-;
-; SPDX-License-Identifier: GPL-3.0-or-later
+;; SPDX-FileCopyrightText: 2024 Samuel W. Flint <me@samuelwflint.com>
+;;
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
 ;;; init.el ---                                      -*- lexical-binding: t; -*-
 
