@@ -1,6 +1,8 @@
-# emacs-universal-sidecar
+# emacs-universal-sidecar [![MELPA](https://melpa.org/packages/universal-sidecar-badge.svg)](https://melpa.org/#/universal-sidecar)
 
 A universal "sidecar" buffer for emacs in the spirit of the `org-roam-mode` buffer.
+
+[![builds.sr.ht status](https://builds.sr.ht/~swflint/emacs-universal-sidecar.svg)](https://builds.sr.ht/~swflint/emacs-universal-sidecar?)
 
 ## Installation
 
@@ -122,7 +124,7 @@ An example is shown below.
   (some-post-processing-of-org-text))
 ```
 
-## Using Org-Roam Buffer Sections
+## Using Org-Roam Buffer Sections [![MELPA](https://melpa.org/packages/universal-sidecar-roam-badge.svg)](https://melpa.org/#/universal-sidecar-roam)
 
 The additional file `universal-sidecar-roam.el` can be used to show sections from the `org-roam-mode` buffer in `universal-sidecar`.
 This can be done either through manual use of the `universal-sidecar-roam-section` function, or through taking an existing configuration (`org-roam-mode-sections`).
@@ -144,7 +146,7 @@ Finally, your sections can be added en-masse with:
 
 Additionally, the `universal-sidecar-buffer-id-formatters` variable can have a "node title or buffer name" formatter, using the `universal-sidecar-roam-buffer-name` function.
 
-## Elfeed Related Papers Sections
+## Elfeed Related Papers Sections [![MELPA](https://melpa.org/packages/universal-sidecar-elfeed-related-badge.svg)](https://melpa.org/#/universal-sidecar-elfeed-related)
 
 The usecase that started this project: I wanted to be able to see possibly related papers that I've read when I read through the ArXiv RSS feeds.
 I initially wrote a basic command which could be run manually for each Elfeed article, yet this is somewhat painful.
@@ -153,7 +155,7 @@ This extension is fairly simple, and builds on top of the `bibtex-completion` li
 Once `bibtex-completion` is configured and the `universal-sidecar-elfeed-related-section` is added to `universal-sidecar-sections`, if an article's authors have other works in your Bibtex databases, they will be shown.
 Note, however, that as of now, search is only by author last name.
 
-## Elfeed Score Section
+## Elfeed Score Section [![MELPA](https://melpa.org/packages/universal-sidecar-elfeed-score-badge.svg)](https://melpa.org/#/universal-sidecar-elfeed-score)
 
 The section `universal-sidecar-elfeed-score-section` shows the score of the currently shown elfeed entry and why it is scored that way.
 
