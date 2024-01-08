@@ -22,18 +22,13 @@ tasks:
       emacs --batch -l emacs-universal-sidecar/build/init.el -f package-lint-batch-and-exit emacs-universal-sidecar/*.el || echo
   - run-melpazoid: |
       export LOCAL_REPO='~/emacs-universal-sidecar/'
-      RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/universal-sidecar) \
+      set +x
+      for recipe in ~/emacs-universal-sidecar/build/recipes/* ; do
+          export RECIPE=$(cat ${recipe})
+          set -x
           emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid/melpazoid.el || echo
-      RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/universal-sidecar-elfeed-related) \
-          emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid/melpazoid.el || echo
-      RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/universal-sidecar-elfeed-score) \
-          emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid/melpazoid.el || echo
-      RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/universal-sidecar-roam) \
-          emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid/melpazoid.el || echo
-      RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/ebib-sidecar) \
-          emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid/melpazoid.el || echo
-      RECIPE=$(cat ~/emacs-universal-sidecar/build/recipes/org-cite-sidecar) \
-          emacs --batch -l ~/emacs-universal-sidecar/build/init.el -l melpazoid/melpazoid/melpazoid.el || echo
+          set +x
+      done
   - build-packages: |
       mkdir -p ~/package-archive/
       emacs --batch -l ~/emacs-universal-sidecar/build/init.el -f build/build-packages
