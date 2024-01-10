@@ -100,7 +100,7 @@ HEADER.
 
 Note: It is necessary to also customize the location of locales
 data, `org-cite-sidecar-locales'."
-  (when-let* ((data-sources (org-cite-list-bibliography-files))
+  (when-let* ((data-sources (mapcar #'expand-file-name (org-cite-list-bibliography-files)))
               (references (org-element-map (with-current-buffer buffer
                                              (org-element-parse-buffer))
                               'citation-reference
