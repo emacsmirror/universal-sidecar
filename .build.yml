@@ -30,7 +30,7 @@ tasks:
           set +x
       done
   - byte-compile: |
-      emacs --batch -l emacs-universal-sidecar/build/init.el -f batch-byte-compile emacs-universal-sidecar/*.el
+      emacs --batch -L emacs-universal-sidecar/ -l emacs-universal-sidecar/build/init.el -f batch-byte-compile emacs-universal-sidecar/*.el
   - build-packages: |
       mkdir -p ~/package-archive/
       emacs --batch -l ~/emacs-universal-sidecar/build/init.el -f build/build-packages
