@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.5.0
+;; Version: 1.5.1
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -204,6 +204,10 @@
 ;;
 ;; v1.5.0 (2024-01-06): The macro `universal-sidecar-fontify-as' is
 ;; now available to fontify code as if in some major mode.
+;;
+;; v1.5.1 (2024-01-16): `universal-sidecar-advise-commands' and
+;; `universal-sidecar-unadvise-commands' now take arguments to allow
+;; programmatic advising.
 
 ;;; Code:
 
@@ -443,9 +447,12 @@ If SIDECAR is non-nil, use sidecar for the current frame."
         (call-interactively original))
     (apply original arguments)))
 
-(defun universal-sidecar-advise-commands ()
-  "Automatically advise functions to update the sidecar buffer."
-  (dolist (command-spec universal-sidecar-advise-commands)
+(defun universal-sidecar-advise-commands (&optional commands-list)
+  "Automatically advise COMMANDS-LIST to update the sidecar buffer.
+
+If COMMANDS-LIST is nil, `universal-sidecar-advise-commands' will
+be used (which, see for format of COMMANDS-LIST)."
+  (dolist (command-spec (or commands-list universal-sidecar-advise-commands))
     (pcase command-spec
       (`(,command :after)
        (advice-add command :after #'universal-sidecar-command-advice))
@@ -458,9 +465,12 @@ If SIDECAR is non-nil, use sidecar for the current frame."
       (`,command
        (advice-add command :after #'universal-sidecar-command-advice)))))
 
-(defun universal-sidecar-unadvise-commands ()
-  "Unadvise commands that update the sidecar buffer."
-  (dolist (command-spec universal-sidecar-advise-commands)
+(defun universal-sidecar-unadvise-commands (&optional commands-list)
+  "Unadvise COMMANDS-LIST to no longer update the sidecar buffer.
+
+If COMMANDS-LIST is nil, `universal-sidecar-advise-commands' will
+be used (which, see for format of COMMANDS-LIST)."
+  (dolist (command-spec (or commands-list universal-sidecar-advise-commands))
     (let ((command (or (and (listp command-spec) (car command-spec))
                        command-spec)))
       (cond
