@@ -8,6 +8,7 @@
 ;; Keywords: bib, org
 ;; Version: 0.5.0
 ;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0"))
+;; TODO Switch to universal-sidecar-citeproc
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
