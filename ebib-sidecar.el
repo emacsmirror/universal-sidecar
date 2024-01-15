@@ -6,8 +6,8 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: bib
-;; Version: 0.1.0
-;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0"))
+;; Version: 1.0.0
+;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0") (universal-sidecar-citeproc "1.0.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -26,93 +26,51 @@
 ;;
 ;; This package can be used to show a formatted reference to the bib
 ;; entry at point in `ebib'.  This is done using the `citeproc'
-;; library and can be shown flexibly.  A minimum configuration is
-;; shown below:
+;; library and can be flexibly configured.  Handling of locale and
+;; style management is performed using `universal-sidecar-citeproc',
+;; and its variables (`universal-sidecar-citeproc-styles' and
+;; `universal-sidecar-citeproc-locales') must be configured.
 ;;
-;; (setq ebib-sidecar-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
-;;       ebib-sidecar-styles "~/.emacs.d/csl-data/styles/")
-;; (add-to-list 'universal-sidecar-sections 'ebib-sidecar)
+;; A minimum configuration is shown as follows:
 ;;
-;; It is important to set the `ebib-sidecar-locales' and
-;; `ebib-sidecar-styles' variables to the directories where you have
-;; cloned the CSL locale and style data repositories (see docstrings
-;; for links).
+;;     (setopt universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
+;;             universal-sidecar-citeproc-styles "~/.emacs.d/csl-data/styles/")
+;;     (add-to-list 'universal-sidecar-sections 'org-cite-sidecar)
 ;;
 ;; Additionally, there are two arguments to the section which are not
 ;; exposed as customization variables:
 ;;
-;; - `:style' allows you to select a prefered CSL style within
-;;   `ebib-sidecar-styles'.  Default is `ieee.csl'.
+;; - `:style' allows you to select a prefered CSL style to override
+;;   `universal-sidecar-citeproc-default-style'.
 ;; - `:header' allows you to change the header of the section from the
 ;;   default "References".
 
 ;;; Code:
 
 (require 'universal-sidecar)
-(require 'ol)
+(require 'universal-sidecar-citeproc)
 (require 'ebib)
-(require 'citeproc)
-
-
-;;; Customization
-
-(defgroup ebib-sidecar '()
-  "Show org citations in sidecar."
-  :group 'ebib
-  :group 'universal-sidecar
-  :prefix "ebib-sidecar-"
-  :link '(url-link :tag "Sourcehut" "https://git.sr.ht/~swflint/emacs-universal-sidecar")
-  :link '(emacs-library-link :tag "Library Source" "ebib-sidecar.el"))
-
-(defcustom ebib-sidecar-locales "~/citeproc/locales/"
-  "Path to the directory containing CSL locales data.
-
-Citeproc locales data can be found at
-https://github.com/citation-style-language/locales."
-  :link '(url-link :tag "CSL Locales Repo" "https://github.com/citation-style-language/locales")
-  :type 'directory
-  :group 'ebib-sidecar)
-
-(defcustom ebib-sidecar-styles "~/citeproc/styles/"
-  "Path to the directory containing CSL style files.
-
-Citeproc locales data can be found at
-https://github.com/citation-style-language/styles."
-  :link '(url-link :tag "CSL Locales Repo" "https://github.com/citation-style-language/styles")
-  :type 'directory
-  :group 'ebib-sidecar)
 
 
 ;;; Define the sidecar
 
-(universal-sidecar-define-section ebib-sidecar ((style "ieee.csl")
-                                                (header "Reference:"))
+(universal-sidecar-define-section ebib-sidecar (style (header "Reference:"))
                                   (:major-modes (ebib-index-mode ebib-entry-mode))
   "Show a formatted reference for the current ebib entry in SIDECAR.
 
-Select reference style by naming a CSL file in STYLE (must be
-found in `ebib-sidecar-styles'), and section title using HEADER.
-
-Note: It is necessary to also customize the locatino of locales
-data, `ebib-sidecar-locales'."
+Select reference style by naming a CSL file in STYLE to override
+`universal-sidecar-citeproc-default-style' (which see), and
+section title using HEADER."
   (when-let* ((db-file (let ((file-name (cdr (assoc 'filename ebib--cur-db))))
                          (and (stringp file-name)
                               (file-exists-p file-name)
                               file-name)))
               (key (ebib--get-key-at-point))
-              (item-getter (citeproc-itemgetter-from-bibtex db-file ))
-              (locale-getter (citeproc-locale-getter-from-dir ebib-sidecar-locales))
-              (processor (citeproc-create (file-name-concat ebib-sidecar-styles style)
-                                          item-getter locale-getter)))
+              (processor (universal-sidecar-citeproc-get-processor db-file :style style)))
     (citeproc-add-uncited (list key) processor)
     (with-current-buffer sidecar
       (universal-sidecar-insert-section ebib-sidecar header
-        (insert (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
-                  (car (citeproc-render-bib processor 'org 'auto 'nil))
-                  (save-match-data
-                    (goto-char (point-min))
-                    (while (re-search-forward org-target-regexp nil t)
-                      (replace-match "")))))))))
+        (insert (universal-sidecar-citeproc-org-output processor))))))
 
 (provide 'ebib-sidecar)
 
