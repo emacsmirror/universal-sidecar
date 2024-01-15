@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.5.1
+;; Version: 1.5.2
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -208,6 +208,9 @@
 ;; v1.5.1 (2024-01-14): `universal-sidecar-advise-commands' and
 ;; `universal-sidecar-unadvise-commands' now take arguments to allow
 ;; programmatic advising.
+;;
+;; v1.5.2 (2024-01-15): `universal-sidecar-buffer-mode-hook' is now
+;; customizable.
 
 ;;; Code:
 
@@ -250,6 +253,12 @@ the sidecar is being shown for."
                        (character :tag "Character")
                        (function :tag "Function"))))
 
+(defcustom universal-sidecar-buffer-mode-hook (list)
+  "Major mode hook to run in the sidecar.
+
+This is run after `magit-section-mode-hook'."
+  :group 'universal-sidecar
+  :type 'hook)
 
 (defcustom universal-sidecar-sections (list)
   "A list of sections that may be shown in the universal sidecar buffer.
