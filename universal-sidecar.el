@@ -205,7 +205,7 @@
 ;; v1.5.0 (2024-01-06): The macro `universal-sidecar-fontify-as' is
 ;; now available to fontify code as if in some major mode.
 ;;
-;; v1.5.1 (2024-01-16): `universal-sidecar-advise-commands' and
+;; v1.5.1 (2024-01-14): `universal-sidecar-advise-commands' and
 ;; `universal-sidecar-unadvise-commands' now take arguments to allow
 ;; programmatic advising.
 
