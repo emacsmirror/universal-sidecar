@@ -104,7 +104,7 @@ will be treated as an absolute path."
   "Get a locale getter from `universal-sidecar-citeproc-locales'."
   (citeproc-locale-getter-from-dir universal-sidecar-citeproc-locales))
 
-(defun universal-sidecar-citeproc-get-processor (data-sources &key style locale-getter locale force-locale)
+(cl-defun universal-sidecar-citeproc-get-processor (data-sources &key style locale-getter locale force-locale)
   "Return a citeproc processor.
 
 Most important is DATA-SOURCES, a list of CSL JSON or BibTeX
@@ -131,7 +131,7 @@ databases from which citation data can be collected.
   (with-temp-buffer
     (org-mode)
     (setq-local org-fold-core-style 'overlays)
-    (insert (car (citerproc-render-bib processor 'org 'auto 'nil)))
+    (insert (car (citeproc-render-bib processor 'org 'auto 'nil)))
     (save-match-data
       (goto-char (point-min))
       (while (re-search-forward org-target-regexp nil t)
