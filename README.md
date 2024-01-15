@@ -159,7 +159,7 @@ Note, however, that as of now, search is only by author last name.
 
 The section `universal-sidecar-elfeed-score-section` shows the score of the currently shown elfeed entry and why it is scored that way.
 
-## Org Mode Citations Section
+## Org Mode Citations Section [![MELPA](https://melpa.org/packages/org-cite-sidecar-badge.svg)](https://melpa.org/#/org-cite-sidecar)
 
 This package can be used to show an Org-Mode document's citations in `universal-sidecar`.
 This is done through the use of `citeproc` and can be shown quite flexibly.
