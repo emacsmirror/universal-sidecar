@@ -1,0 +1,8 @@
+; SPDX-FileCopyrightText: 2024 Samuel W. Flint <me@samuelwflint.com>
+;
+; SPDX-License-Identifier: GPL-3.0-or-later
+
+(universal-sidecar-citeproc
+ :fetcher sourcehut
+ :repo "swflint/emacs-universal-sidecar"
+ :files ("universal-sidecar-citeproc.el"))
