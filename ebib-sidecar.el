@@ -7,7 +7,7 @@
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: bib
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0") (universal-sidecar-citeproc "1.0.0"))
+;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0") (universal-sidecar-citeproc "1.0.0") (ebib "2.39"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@
 ;;
 ;; A minimum configuration is shown as follows:
 ;;
-;;     (setopt universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
+;;     ;; set to your directories for locale and style data
+;;     (setopt universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/"
 ;;             universal-sidecar-citeproc-styles "~/.emacs.d/csl-data/styles/")
 ;;     (add-to-list 'universal-sidecar-sections 'org-cite-sidecar)
 ;;
