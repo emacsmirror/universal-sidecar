@@ -76,7 +76,11 @@ Note: SHOWN-BUFFER may be a buffer, string, or function."
   "Show a display of current `org-clock' data.
 
 In particular, show the total completed today, the time for the
-current task, and the time spent on the task today."
+current task, and the time spent on the task today.
+
+If you use this, it is helpful to
+include (universal-sidecar-org-clock-insinuate) somewhere in your
+config."
   (cl-destructuring-bind (total-today task-today)
       (with-current-buffer (org-clock-is-active)
         (let ((org-clock-report-include-clocking-task t))
@@ -93,6 +97,13 @@ current task, and the time spent on the task today."
                       org-clock-heading
                       (org-duration-from-minutes (org-clock-get-clocked-time))
                       task-today)))))
+
+(defun universal-sidecar-org-clock-insinuate ()
+  "Insinuate sidecar updating to `org-clock' commands."
+  (universal-sidecar-advise-commands '(org-clock-in
+                                       org-clock-out
+                                       org-clock-cancel
+                                       org-clock-in-last)))
 
 ;;; TODO: Implement some (more) generic sidecars
 
