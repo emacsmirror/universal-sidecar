@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 0.0.1
+;; Version: 0.5.0
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -67,6 +67,32 @@ Note: SHOWN-BUFFER may be a buffer, string, or function."
       (universal-sidecar-insert-section tail-buffer-section title
         (with-current-buffer sidecar
           (insert contents))))))
+
+
+;;; Org Clock Section
+
+(universal-sidecar-define-section universal-sidecar-org-clock-section ()
+                                  (:predicate (org-clock-is-active))
+  "Show a display of current `org-clock' data.
+
+In particular, show the total completed today, the time for the
+current task, and the time spent on the task today."
+  (cl-destructuring-bind (total-today task-today)
+      (with-current-buffer (org-clock-is-active)
+        (let ((org-clock-report-include-clocking-task t))
+          (list (org-duration-from-minutes (org-clock-sum-today))
+                (save-excursion
+                  (save-restriction
+                    (goto-char org-clock-marker)
+                    (org-narrow-to-subtree)
+                    (setq org-clock-today-subtree-time
+                          (org-clock-today--total-minutes)))))))
+    (universal-sidecar-insert-section universal-sidecar-org-clock-section
+        (format "Org Clock (%s today)" total-today)
+      (insert (format "%s (%s out of %s today)"
+                      org-clock-heading
+                      (org-duration-from-minutes (org-clock-get-clocked-time))
+                      task-today)))))
 
 ;;; TODO: Implement some (more) generic sidecars
 

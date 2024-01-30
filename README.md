@@ -248,3 +248,10 @@ These are found in `universal-sidecar-sections.el`.
 Show the last `n-lines` of `show-buffer` in the sidecar with `title`.
 If `show-buffer` doesn't exist, or is empty, no section will be shown.
 Additionally, `show-buffer` can be a buffer object, a string buffer name, a symbol whose value is a buffer, or a zero-argument function which will be called to get a buffer.
+
+### Org Clock Section
+
+`universal-sidecar-org-buffer-clock-section`
+
+Show a display of current org-mode clocking data.
+In particular, the total time clocked in for today, the time since starting the task today, and the total time spent on the currently-clocked task (as well as the currently clocked task) are shown.
