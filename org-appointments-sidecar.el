@@ -223,15 +223,15 @@ The upcoming time is the timestamp (including deadline or
 scheduled) which starts no earlier than the look-back period (see
 `org-appointments-sidecar-look-back')."
   (cl-destructuring-bind (start-time _end-time) (org-appointments-sidecar--start-end-times)
-    (first (sort (cl-remove-if
-                  (lambda (ts) (or (null ts) (ts<= ts start-time)))
-                  (mapcar
-                   #'ts-parse-org-element
-                   (delq nil (append
-                              (org-element-map appointment 'timestamp #'identity)
-                              (list (org-element-property :deadline appointment)
-                                    (org-element-property :scheduled appointment))))))
-                 #'ts<))))
+    (car (sort (cl-remove-if
+                (lambda (ts) (or (null ts) (ts<= ts start-time)))
+                (mapcar
+                 #'ts-parse-org-element
+                 (delq nil (append
+                            (org-element-map appointment 'timestamp #'identity)
+                            (list (org-element-property :deadline appointment)
+                                  (org-element-property :scheduled appointment))))))
+               #'ts<))))
 
 (defun org-appointments-sidecar--format-time-until (timestamp)
   "Format time until TIMESTAMP."
