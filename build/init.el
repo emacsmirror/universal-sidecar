@@ -14,6 +14,9 @@
 
     org-roam
 
+    org-ql
+    ts
+
     bibtex-completion
     citeproc
     ebib

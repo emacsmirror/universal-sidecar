@@ -172,6 +172,24 @@ Finally, your sections can be added en-masse with:
 
 Additionally, the `universal-sidecar-buffer-id-formatters` variable can have a "node title or buffer name" formatter, using the `universal-sidecar-roam-buffer-name` function.
 
+## Org Appointments Section [![MELPA](https://melpa.org/packages/org-appointments-sidecar-badge.svg)](https://melpa.org/#/org-appointments-sidecar)
+
+This package displays upcoming appointments/events from the Org Agenda in the Universal Sidecar.
+It's based on [`org-upcoming-modeline`](https://github.com/unhammer/org-upcoming-modeline/) but allows the display of multiple upcoming (and active) events.
+Basic configuration is as simple as adding `org-appointments-sidecar` to `universal-sidecar-sections` at the appropriate spot.
+
+More advanced customization is available as follows:
+
+ - To ignore events based on their TODO states or tags, customize the variables `org-appointments-sidecar-ignored-states` and `org-appointments-ignored-tags`, respectively.
+ These are simply lists of ignored states/tags.
+ - The duration of the considered period is controlled by `org-appointments-sidecar-look-back` and `org-appointments-sidecar-look-ahead` which define the start and end of the period relative to NOW respectively.
+ They are cons cells of the form (DURATION . UNIT), where DURATION is an integer, and UNIT is a symbol in (second minute hour day).
+ - Display of events is controlled by `org-appointments-sidecar-format-function`, the default of which is `org-appointments-sidecar-format-appointment`.
+ In general, this function should take an `org-element` heading, and return org-formatted text.
+ For further customization (ex, developing ones own formatting function), see the docstring.
+ - If using the default format function, the variable `org-appointments-sidecar-show-properties` is used to select and display various properties from the heading.
+ It should be a list of either strings naming properties, or cons cells of property name/display name pairs.
+
 ## Elfeed Related Papers Sections [![MELPA](https://melpa.org/packages/universal-sidecar-elfeed-related-badge.svg)](https://melpa.org/#/universal-sidecar-elfeed-related)
 
 The usecase that started this project: I wanted to be able to see possibly related papers that I've read when I read through the ArXiv RSS feeds.
