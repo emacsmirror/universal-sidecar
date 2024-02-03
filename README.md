@@ -243,7 +243,7 @@ Additionally, there are two arguments to the section which are not exposed as cu
 - `:style` allows you to select a prefered CSL style to override `universal-sidecar-citeproc-default-style`.
 - `:header` allows you to change the header of the section from the default "References".
 
-## EBDB Mua Sidecar
+## EBDB Mua Sidecar [![MELPA](https://melpa.org/packages/ebdb-mua-sidecar-badge.svg)](https://melpa.org/#/ebdb-mua-sidecar)
 
 [EBDB](https://github.com/girzel/ebdb/) records for MUA buffers can be displayed using Universal Sidecar.
 As of now, it only supports `message-mode`, `gnus-article-mode` and `gnus-summary-mode` (patches welcome to support others, though I suspect it's just the major mode names that need set).
