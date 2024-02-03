@@ -36,7 +36,7 @@
 ;;     ;; set to your directories for locale and style data
 ;;     (setopt universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/"
 ;;             universal-sidecar-citeproc-styles "~/.emacs.d/csl-data/styles/")
-;;     (add-to-list 'universal-sidecar-sections 'org-cite-sidecar)
+;;     (add-to-list 'universal-sidecar-sections 'ebib-sidecar)
 ;;
 ;; Additionally, there are two arguments to the section which are not
 ;; exposed as customization variables:

@@ -224,7 +224,7 @@ Additionally, there are two arguments to the section which are not exposed as cu
  Default is `universal-sidecar-citeproc-default-style`.
 - `:header` allows you to change the header of the section from the default "References".
 
-## Ebib Formatted Reference Section
+## Ebib Formatted Reference Section [![MELPA](https://melpa.org/packages/ebib-sidecar-badge.svg)](https://melpa.org/#/ebib-sidecar)
 
 This package can be used to show a formatted reference to the bib entry at point in `ebib`.
 This is done using the `citeproc` library and can be flexibly configured.
@@ -235,7 +235,7 @@ A minimum configuration is shown as follows:
 ```elisp
 (setopt universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
         universal-sidecar-citeproc-styles "~/.emacs.d/csl-data/styles/")
-(add-to-list 'universal-sidecar-sections 'org-cite-sidecar)
+(add-to-list 'universal-sidecar-sections 'ebib-sidecar)
 ```
 
 Additionally, there are two arguments to the section which are not exposed as customization variables:
