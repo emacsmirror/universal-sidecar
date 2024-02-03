@@ -4,6 +4,25 @@
 ;;
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
+(defvar build/required-packages
+  '(;; Linting, Style Checking, Packaging
+    package-lint
+    package-build
+
+    ;; Dependencies
+    magit-section
+
+    org-roam
+
+    bibtex-completion
+    citeproc
+    ebib
+
+    elfeed
+    elfeed-score
+
+    ebdb)
+  "Packages required for building the various recipes.")
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -11,7 +30,7 @@
 
 (defun build/package-install-prereqs ()
   (package-refresh-contents)
-  (dolist (pkg '(magit-section bibtex-completion elfeed elfeed-score org-roam citeproc ebib package-lint package-build ebdb))
+  (dolist (pkg build/required-packages)
     (package-install pkg)))
 
 (defun build/build-packages ()
