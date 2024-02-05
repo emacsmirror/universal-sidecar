@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: calendar
-;; Version: 0.5.0
+;; Version: 0.5.1
 ;; Package-Requires: ((emacs "29.1") (universal-sidecar "1.5.0") (ts "0.3") (org-ql "0.8"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -287,15 +287,13 @@ be shown from `org-appointments-sidecar-look-back' before NOW to
 
 Formatting of events is performed by
 `org-appointments-sidecar-format-function'."
-  (when-let* ((events (org-appointments-sidecar-find-events)))
+  (when-let* ((events (take org-appointments-sidecar-show-events (org-appointments-sidecar-find-events)))
+              (formatted-events (delq nil (mapcar org-appointments-sidecar-format-function events)))
+              (event-output-string (string-join formatted-events "\n")))
     (with-current-buffer sidecar
       (universal-sidecar-insert-section org-appointments-sidecar header
-        ;; (setf temp-events events)
-        (cl-dolist (event (take org-appointments-sidecar-show-events events))
-          (insert
-           (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
-             (funcall org-appointments-sidecar-format-function event)))
-          (insert "\n"))
+        (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+          event-output-string)
         (insert "\n")))))
 
 (provide 'org-appointments-sidecar)
