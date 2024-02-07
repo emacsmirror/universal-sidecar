@@ -4,6 +4,10 @@ A universal "sidecar" buffer for emacs in the spirit of the `org-roam-mode` buff
 
 [![builds.sr.ht status](https://builds.sr.ht/~swflint/emacs-universal-sidecar.svg)](https://builds.sr.ht/~swflint/emacs-universal-sidecar?)
 
+## Bug Reports and Patches
+
+If you find an error or have a patch to improve these packages, please send an email to `~swflint/emacs-utilities@lists.sr.ht`.
+
 ## Installation
 
 This package has one main requirement: `magit`, for `magit-section`.
