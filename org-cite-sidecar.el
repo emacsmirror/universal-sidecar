@@ -68,6 +68,15 @@
 
 ;;; Define the sidecar
 
+(defvar org-cite-sidecar-deprecation-warning-shown nil
+  "Has the `org-cite-sidecar' deprecation warning been shown?")
+
+(defvar org-cite-sidecar-ignore-deprecation-warning nil
+  "Ignore `org-cite-sidecar' deprecation warning.
+
+This must be either nil or your username as determined by
+the function `user-login-name'.")
+
 (universal-sidecar-define-section org-cite-sidecar (style
                                                     (header "References"))
                                   (:major-modes (org-mode))
@@ -76,6 +85,10 @@
 Select reference style by naming a CSL file in STYLE to override
 `universal-sidecar-citeproc-default-style' (which see), and
 section title using HEADER."
+  (unless (or org-cite-sidecar-deprecation-warning-shown
+              (string= org-cite-sidecar-ignore-deprecation-warning (user-login-name)))
+    (display-warning 'org-cite-sidecar "`org-cite-sidecar' is deprecated, see commentary ((find-library \"org-cite-sidecar.el\"))")
+    (setf org-cite-sidecar-deprecation-warning-shown t))
   (when-let* ((data-sources (mapcar #'expand-file-name (org-cite-list-bibliography-files)))
               (references (org-element-map (with-current-buffer buffer
                                              (org-element-parse-buffer))
