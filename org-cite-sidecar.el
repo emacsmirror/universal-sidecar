@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: bib, org
-;; Version: 1.0.0
+;; Version: 1.1.0
 ;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0") (universal-sidecar-citeproc "1.0.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,12 @@
 ;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
+;;
+;; *Notice:* This package is now deprectated and will be removed from
+;; MELPA around 18 March 2024.  Please use `org-cite-overlay-sidecar'
+;; (https://git.sr.ht/~swflint/org-cite-overlay) in its place, which
+;; does roughly the same thing, but in a more flexible way, and can
+;; utilize information from the `org-cite-overlay' package (same URL).
 ;;
 ;; This package can be used to show an Org-Mode document's citations
 ;; in `universal-sidecar'.  This is done through the use of `citeproc'
