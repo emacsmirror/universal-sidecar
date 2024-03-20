@@ -263,6 +263,26 @@ The following options are available:
 - `:formatter` (default `ebdb-default-multiline-formatter`) determines how records are formatted.
   This should be an instance of `ebdb-record-formatter`.
 
+## Wordcount Section [![MELPA](https://melpa.org/packages/wordcount-section-badge.svg)](https://melpa.org/#/wordcount-section)
+
+Word count information for a buffer can be shown using `wordcount-section`.
+Basic installation is as follows.
+
+```elisp
+(add-to-list 'universal-sidecar-sections #'wordcount-section)
+```
+
+The wordcount display can be customized in three ways:
+
+ - The `:header` keyword argument can be used to change the section header.
+ - The format of word count information is controlled by the variable `wordcount-section-format`, which supports the following percent escapes:
+| %w | Word Count      |
+| %s | Sentence Count  |
+| %l | Line Count      |
+| %c | Character Count |
+ - The `wordcount-section-modes` variable controls the modes that have wordcounts shown. 
+   This list is passed to `derived-mode-p` in the target buffer.
+
 ## Basic and Example Sections
 
 These are found in `universal-sidecar-sections.el`.
