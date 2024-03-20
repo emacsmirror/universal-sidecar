@@ -6,8 +6,8 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: bib
-;; Version: 1.0.0
-;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0") (universal-sidecar-citeproc "1.0.0") (ebib "2.39"))
+;; Version: 1.1.0
+;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.1") (universal-sidecar-citeproc "1.0.0") (ebib "2.39"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -45,6 +45,11 @@
 ;;   `universal-sidecar-citeproc-default-style'.
 ;; - `:header' allows you to change the header of the section from the
 ;;   default "References".
+;;
+;; Finally, update based on ebib motion commands can be enabled either
+;; manually (using `universal-sidecar-advise-commands') or
+;; automatically by also adding `ebib-sidecar-insinuate' somewhere in
+;; your init file.
 
 ;;; Code:
 
@@ -72,6 +77,13 @@ section title using HEADER."
     (with-current-buffer sidecar
       (universal-sidecar-insert-section ebib-sidecar header
         (insert (universal-sidecar-citeproc-org-output processor))))))
+
+(defun ebib-sidecar-insinuate ()
+  "Insinuate sidecar updating to EBDB commands."
+  (universal-sidecar-advise-commands '(elfeed-show-prev
+                                       elfeed-show-next
+                                       ebib-save-current-database
+                                       ebib-switch-to-database-key)))
 
 (provide 'ebib-sidecar)
 
