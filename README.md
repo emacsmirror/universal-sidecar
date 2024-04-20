@@ -1,10 +1,8 @@
-![Logo](images/logo.png)
-
-# emacs-universal-sidecar [![MELPA](https://melpa.org/packages/universal-sidecar-badge.svg)](https://melpa.org/#/universal-sidecar)
+# emacs-universal-sidecar [![MELPA](https://melpa.org/packages/universal-sidecar-badge.svg)](https://melpa.org/#/universal-sidecar) [![builds.sr.ht status](https://builds.sr.ht/~swflint/emacs-universal-sidecar.svg)](https://builds.sr.ht/~swflint/emacs-universal-sidecar?)
 
 A universal "sidecar" buffer for emacs in the spirit of the `org-roam-mode` buffer.
 
-[![builds.sr.ht status](https://builds.sr.ht/~swflint/emacs-universal-sidecar.svg)](https://builds.sr.ht/~swflint/emacs-universal-sidecar?)
+![Logo](images/logo.png)
 
 ## Bug Reports and Patches
 
