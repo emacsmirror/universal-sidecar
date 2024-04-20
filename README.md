@@ -1,3 +1,5 @@
+![Logo](images/logo.png)
+
 # emacs-universal-sidecar [![MELPA](https://melpa.org/packages/universal-sidecar-badge.svg)](https://melpa.org/#/universal-sidecar)
 
 A universal "sidecar" buffer for emacs in the spirit of the `org-roam-mode` buffer.
