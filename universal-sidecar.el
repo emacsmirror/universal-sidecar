@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.5.2
+;; Version: 1.6.0
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -90,6 +90,15 @@
 ;; an alist of character/function pairs.  The functions should take as
 ;; their first (and only mandatory) argument the buffer for which the
 ;; sidecar is being displayed.
+;;
+;; Additionally, fontification of sections may be performed by the
+;; `universal-sidecar-fontify-as' macro.  This macro includes a
+;; provision to allow you to set some buffer-local variables before
+;; the fontification mode is enabled.  This is done using
+;; `universal-sidecar-fontify-default-bindings', which takes a list of
+;; lists, such that the first element of the list is the name of the
+;; buffer, and the second element is the expression to evaluate the
+;; binding for.
 ;;
 ;; Finally, sidecar buffers are displayed using `display-window'.
 ;; This means that how the buffer is displayed is easily configurable
@@ -319,6 +328,13 @@ Return non-nil if the buffer should be ignored.  Hook will be run
 until non-nil."
   :group 'universal-sidecar
   :type 'hook)
+
+(defcustom universal-sidecar-fontify-default-bindings (list)
+  "Default bindings for `universal-sidecar-fontify-as'."
+  :group 'universal-sidecar
+  :type '(repeat (list :tag "Binding"
+                       (symbol :tag "Variable")
+                       (sexp :tag "Expression"))))
 
 
 ;;; Sidecar Buffer Mode
@@ -609,8 +625,10 @@ After inserting results of STRING-EXPRESSION, AFTER-INSERT is run."
                                   `(setq-local ,(nth 0 binding) ,(nth 1 binding)))
                                 local-bindings)))
     `(with-temp-buffer
-       (,mode)
+       (dolist (binding universal-sidecar-fontify-default-bindings)
+         (setf (buffer-local-value (car binding) (current-buffer)) (eval (cdr binding))))
        ,@local-bindings
+       (,mode)
        (insert ,string-expression)
        ,@after-insert
        (font-lock-ensure)
