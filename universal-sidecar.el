@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.6.0
+;; Version: 1.6.1
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -626,7 +626,7 @@ After inserting results of STRING-EXPRESSION, AFTER-INSERT is run."
                                 local-bindings)))
     `(with-temp-buffer
        (dolist (binding universal-sidecar-fontify-default-bindings)
-         (setf (buffer-local-value (car binding) (current-buffer)) (eval (cdr binding))))
+         (setf (buffer-local-value (car binding) (current-buffer)) (eval (nth 2 binding))))
        ,@local-bindings
        (,mode)
        (insert ,string-expression)
