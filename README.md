@@ -43,7 +43,7 @@ If we want the default behavior, we would configure it using
 However, if we want the opposite behavior (don't show renames), we'd configure it as shown below.
 
 ```elisp
-(add-to-list 'universal-sidecar-sections '(buffer-git-status :show-renames t))
+(add-to-list 'universal-sidecar-sections '(buffer-git-status :show-renames nil))
 ```
 
 Note that using `add-to-list` is generally bad practice, as the sections will be run in the order they're present in the list.
