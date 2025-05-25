@@ -1,0 +1,529 @@
+\input texinfo @c -*- texinfo -*-
+@documentencoding UTF-8
+
+@ifnottex
+@paragraphindent 0
+@end ifnottex
+@node Top
+@top Top
+
+@c SPDX-FileCopyrightText: 2023 Samuel W. Flint <me@samuelwflint.com>
+@c SPDX-License-Identifier: GFDL-1.3-invariants-or-later
+
+@menu
+* emacs-universal-sidecar MELPA buildssrht status::
+@end menu
+
+@node emacs-universal-sidecar MELPA buildssrht status
+@chapter emacs-universal-sidecar
+@uref{https://melpa.org/#/universal-sidecar,@image{https://melpa.org/packages/universal-sidecar-badge,,,MELPA,svg}}
+@uref{https://builds.sr.ht/~swflint/emacs-universal-sidecar?,@image{https://builds.sr.ht/~swflint/emacs-universal-sidecar,,,builds.sr.ht
+status,svg}}
+@anchor{#emacs-universal-sidecar-melpa-builds.sr.ht-status}
+A universal ``sidecar'' buffer for emacs in the spirit of the
+@code{org-roam-mode} buffer.
+
+@float
+@image{images/logo,,,Logo,png}
+@caption{Logo}
+@end float
+
+@menu
+* Bug Reports and Patches::
+* Installation::
+* Usage::
+* Section Functions::
+* Including Citation Data::
+* Using Org-Roam Buffer Sections MELPA::
+* Org Appointments Section MELPA::
+* Elfeed Related Papers Sections MELPA::
+* Elfeed Score Section MELPA::
+* Org Mode Citations Section MELPA::
+* Ebib Formatted Reference Section MELPA::
+* EBDB Mua Sidecar MELPA::
+* Wordcount Section MELPA::
+* Basic and Example Sections::
+@end menu
+
+@node Bug Reports and Patches
+@section Bug Reports and Patches
+@anchor{#bug-reports-and-patches}
+If you find an error or have a patch to improve these packages, please
+send an email to @code{~swflint/emacs-utilities@@lists.sr.ht}.
+
+@node Installation
+@section Installation
+@anchor{#installation}
+This package has one main requirement: @code{magit}, for
+@code{magit-section}. Assuming this package is satisfied, the
+@code{universal-sidecar.el} file may be placed on the load path and
+@code{require}d.
+
+@node Usage
+@section Usage
+@anchor{#usage}
+The @code{universal-sidecar-toggle} command will bring up a per-frame
+``sidecar'' buffer. These sidecar buffers are used to show information
+about or related to the focused buffer. Information is shown in
+@emph{sections}, which are configured using the
+@code{universal-sidecar-sections} variable. The behavior of this
+variable, and expected interface is described below in configuration.
+
+Additionally, to make sure that the sidecar buffer is updated, it's
+necessary to advise several functions. This can be done automatically
+using the @code{universal-sidecar-insinuate} function, which will advise
+functions listed in @code{universal-sidecar-advise-commands}. This may
+be undone with @code{universal-sidecar-uninsinuate}. Additionally,
+@code{universal-sidecar-insinuate} will add
+@code{universal-sidecar-refresh} to the @code{focus-in-hook}, and will
+set an idle timer to refresh all sidecar buffers (idle time configured
+with @code{universal-sidecar-refresh-time}). Buffers can be ignored by
+modifying the @code{universal-sidecar-ignore-buffer-regexp}, or using
+the (irregular) @code{universal-sidecar-ignore-buffer-functions} hook.
+This hook will be run with an argument (the buffer) and run until a
+non-nil result.
+
+@menu
+* Configuration::
+@end menu
+
+@node Configuration
+@subsection Configuration
+@anchor{#configuration}
+The name of the sidecar buffer is configured using
+@code{universal-sidecar-buffer-name-format}, which must contain
+@code{%F}, a representation of the description of the frame.
+
+Which sections are shown is configured using
+@code{universal-sidecar-sections}, which is a list of functions or
+functions-with-arguments. For example, let's consider the section
+@code{buffer-git-status}, which shows git status. This section allows a
+keyword argument, @code{:show-renames}, which defaults to t. If we want
+the default behavior, we would configure it using
+
+@verbatim
+(add-to-list 'universal-sidecar-sections 'buffer-git-status)
+@end verbatim
+
+However, if we want the opposite behavior (don't show renames), we'd
+configure it as shown below.
+
+@verbatim
+(add-to-list 'universal-sidecar-sections '(buffer-git-status :show-renames nil))
+@end verbatim
+
+Note that using @code{add-to-list} is generally bad practice, as the
+sections will be run in the order they're present in the list.
+
+Next, the displayed buffer name is generated using
+@code{universal-sidecar-buffer-id-format} and
+@code{universal-sidecar-buffer-id-formatters}. These may be customized
+to your liking. Note: @code{universal-sidecar-buffer-id-formatters} is
+an alist of character/function pairs. The functions should take as their
+first (and only mandatory) argument the buffer for which the sidecar is
+being displayed.
+
+Additionally, fontification of sections may be performed by the
+@code{universal-sidecar-fontify-as} macro. This macro includes a
+provision to allow you to set some buffer-local variables before the
+fontification mode is enabled. This is done using
+@code{universal-sidecar-fontify-default-bindings}, which takes a list of
+lists, such that the first element of the list is the name of the
+buffer, and the second element is the expression to evaluate the binding
+for.
+
+Finally, sidecar buffers are displayed using @code{display-window}. This
+means that how the buffer is displayed is easily configurable from
+@code{display-buffer-alist}. The author's configuration is shown below
+as an example. In particular, using the
+@code{display-buffer-in-side-window} display action is suggested, as
+it's generally not helpful to select the sidecar window through normal
+window motion commands
+
+@verbatim
+(add-to-list 'display-buffer-alist
+             '("\\*sidecar\\*"
+               (display-buffer-in-side-window)
+               (slot . 0)
+               (window-width . 0.2)
+               (window-height . 0.2)
+               (preserve-size t . t)
+               (window-parameters . ((no-other-window . t)
+                                     (no-delete-other-windows . t)))))
+@end verbatim
+
+Finally, errors in sections or section definitions are by default logged
+to the @code{*Warnings*} buffer. This is done in a way to allow for
+debugging. Moreover, the logging can be disabled by setting
+@code{universal-sidecar-inhibit-section-error-log} to non-nil, in which
+case (unless debugging is enabled) these errors will be ignored.
+
+@node Section Functions
+@section Section Functions
+@anchor{#section-functions}
+The basic installation of @code{universal-sidecar} does not include any
+section functions. This is to reduce the number of dependencies of the
+package itself so that it may be used as a library for others, or to
+help integrate multiple packages. A @code{universal-sidecar-sections.el}
+package is available as well, which will have simple section definitions
+that may be of use.
+
+However, implementation of functions is generally straight-forward.
+First, sections are simply functions which take a minimum of two
+arguments, @code{buffer}, or the buffer we're generating a sidecar for,
+and @code{sidecar}, the sidecar buffer. When writing these section
+functions, it is recommended to avoid writing content to @code{sidecar}
+until it's verified that the information needed is available. That is
+@strong{don't write sections without bodies}.
+
+To aid in defining sections, the @code{universal-sidecar-define-section}
+and @code{universal-sidecar-insert-section} macros are available. The
+first defines a section which can be added to
+@code{universal-sidecar-sections}. The second simplifies writing
+sections by adding proper separators and headers to the sidecar buffer.
+We will demonstrate both below.
+
+@verbatim
+(universal-sidecar-define-section fortune-section (file title)
+                                  (:major-modes org-mode
+                                   :predicate (not (buffer-modified-p)))
+  (let ((title (or title
+                   (and file
+                        (format "Fortune: %s" file))
+                   "Fortune"))
+        (fortune (shell-command-to-string (format "fortune%s"
+                                                  (if file
+                                                      (format " %s" file)
+                                                    "")))))
+    (universal-sidecar-insert-section fortune-section title
+      (insert fortune))))
+@end verbatim
+
+Note: the arguments (@code{file} and @code{title}) are @emph{keyword}
+arguments. Additionally, you specify that this section only applies when
+@code{buffer} is a descendent of @code{:major-modes} which can be either
+a symbol or a list of symbols. @code{:predicate} is used to specify a
+somewhat more complex predicate to determine if the section should be
+generated.
+
+This section could be added in any of the following ways:
+
+@verbatim
+(add-to-list 'universal-sidecar-sections 'fortune-section)
+(add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions"))
+(add-to-list 'universal-sidecar-sections '(fortune-section :title "O Fortuna!"))
+(add-to-list 'universal-sidecar-sections '(fortune-section :file "definitions" :title "Random Definition"))
+@end verbatim
+
+Finally, section text can be formatted and fontified as if it was in
+some other mode, for instance, @code{org-mode} using
+@code{universal-sidecar-fontify-as}. An example is shown below.
+
+@verbatim
+(universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+  (some-function-that-generates-org-text)
+  (some-post-processing-of-org-text))
+@end verbatim
+
+@node Including Citation Data
+@section Including Citation Data
+@anchor{#including-citation-data}
+The @code{universal-sidecar-citeproc} library simplifies the use of
+@code{citeproc.el} to format citation data. To this end, the
+@code{universal-cidecar-citeproc} customization group allows
+citeproc-related paths to be set once and easily reused (in particular,
+it is important to remind users to set the
+@code{universal-sidecar-citeproc-locales} and
+@code{universal-sidecar-citeproc-styles} variables). Additionally, it
+provides a single place for users to set their default preferred
+citation style (as an absolute path, or relative to
+@code{universal-sidecar-citeproc-styles}).
+
+Users are encouraged to customize in the following pattern.
+
+@verbatim
+(setopt universal-sidecar-citeproc-locales "~/citeproc/locales/"
+        universal-sidecar-citeproc-styles "~/citeproc/styles/"
+        universal-sidecar-citeproc-default-style "ieee.csl")
+@end verbatim
+
+For developers, there are two main functions,
+@code{universal-sidecar-citeproc-get-processor} and
+@code{universal-sidecar-citeproc-org-output}. The former will create a
+citation processor (see @code{citeproc} library documentation) from a
+list of data sources, and style/locale information. The latter will take
+a processor and generate an @code{org-mode} formatted (and fontified)
+string for insertion into a sidecar. These may be used as follows:
+
+@verbatim
+(defun demo-citeproc-formatter (keys bibliography)
+  (let ((processor (universal-sidecar-citeproc-get-processor bibliography)))
+    (citeproc-add-uncited keys processor)
+    (universal-sidecar-citeproc-org-output processor)))
+@end verbatim
+
+@node Using Org-Roam Buffer Sections MELPA
+@section Using Org-Roam Buffer Sections
+@uref{https://melpa.org/#/universal-sidecar-roam,@image{https://melpa.org/packages/universal-sidecar-roam-badge,,,MELPA,svg}}
+@anchor{#using-org-roam-buffer-sections-melpa}
+The additional file @code{universal-sidecar-roam.el} can be used to show
+sections from the @code{org-roam-mode} buffer in
+@code{universal-sidecar}. This can be done either through manual use of
+the @code{universal-sidecar-roam-section} function, or through taking an
+existing configuration (@code{org-roam-mode-sections}).
+
+To use @code{universal-sidecar-roam-section}, a minimum configuration
+is:
+
+@verbatim
+(add-to-list 'universal-sidecar-sections '(universal-sidecar-roam-section org-roam-backlinks-section))
+@end verbatim
+
+Note, that if you would pass arguments to the normal org-roam section,
+you may do so after the section name in
+@code{universal-sidecar-org-roam-section}.
+
+Finally, your sections can be added en-masse with:
+
+@verbatim
+(setq universal-sidecar-sections
+      (universal-sidecar-roam-convert-roam-sections org-roam-mode-sections))
+@end verbatim
+
+Additionally, the @code{universal-sidecar-buffer-id-formatters} variable
+can have a ``node title or buffer name'' formatter, using the
+@code{universal-sidecar-roam-buffer-name} function.
+
+@node Org Appointments Section MELPA
+@section Org Appointments Section
+@uref{https://melpa.org/#/org-appointments-sidecar,@image{https://melpa.org/packages/org-appointments-sidecar-badge,,,MELPA,svg}}
+@anchor{#org-appointments-section-melpa}
+This package displays upcoming appointments/events from the Org Agenda
+in the Universal Sidecar. It's based on
+@uref{https://github.com/unhammer/org-upcoming-modeline/,@code{org-upcoming-modeline}}
+but allows the display of multiple upcoming (and active) events. Basic
+configuration is as simple as adding @code{org-appointments-sidecar} to
+@code{universal-sidecar-sections} at the appropriate spot.
+
+More advanced customization is available as follows:
+
+@itemize
+@item
+To ignore events based on their TODO states or tags, customize the
+variables @code{org-appointments-sidecar-ignored-states} and
+@code{org-appointments-ignored-tags}, respectively. These are simply
+lists of ignored states/tags.
+@item
+The duration of the considered period is controlled by
+@code{org-appointments-sidecar-look-back} and
+@code{org-appointments-sidecar-look-ahead} which define the start and
+end of the period relative to NOW respectively. They are cons cells of
+the form (DURATION . UNIT), where DURATION is an integer, and UNIT is a
+symbol in (second minute hour day).
+@item
+Display of events is controlled by
+@code{org-appointments-sidecar-format-function}, the default of which is
+@code{org-appointments-sidecar-format-appointment}. In general, this
+function should take an @code{org-element} heading, and return
+org-formatted text. For further customization (ex, developing ones own
+formatting function), see the docstring.
+@item
+If using the default format function, the variable
+@code{org-appointments-sidecar-show-properties} is used to select and
+display various properties from the heading. It should be a list of
+either strings naming properties, or cons cells of property name/display
+name pairs.
+@end itemize
+
+@node Elfeed Related Papers Sections MELPA
+@section Elfeed Related Papers Sections
+@uref{https://melpa.org/#/universal-sidecar-elfeed-related,@image{https://melpa.org/packages/universal-sidecar-elfeed-related-badge,,,MELPA,svg}}
+@anchor{#elfeed-related-papers-sections-melpa}
+The usecase that started this project: I wanted to be able to see
+possibly related papers that I've read when I read through the ArXiv RSS
+feeds. I initially wrote a basic command which could be run manually for
+each Elfeed article, yet this is somewhat painful. Thus came
+@code{universal-sidecar}, and this particular sidecar section. This
+extension is fairly simple, and builds on top of the
+@code{bibtex-completion} library, so it's necessary to configure it
+appropriately. Once @code{bibtex-completion} is configured and the
+@code{universal-sidecar-elfeed-related-section} is added to
+@code{universal-sidecar-sections}, if an article's authors have other
+works in your Bibtex databases, they will be shown. Note, however, that
+as of now, search is only by author last name.
+
+@node Elfeed Score Section MELPA
+@section Elfeed Score Section
+@uref{https://melpa.org/#/universal-sidecar-elfeed-score,@image{https://melpa.org/packages/universal-sidecar-elfeed-score-badge,,,MELPA,svg}}
+@anchor{#elfeed-score-section-melpa}
+The section @code{universal-sidecar-elfeed-score-section} shows the
+score of the currently shown elfeed entry and why it is scored that way.
+
+@node Org Mode Citations Section MELPA
+@section Org Mode Citations Section
+@uref{https://melpa.org/#/org-cite-sidecar,@image{https://melpa.org/packages/org-cite-sidecar-badge,,,MELPA,svg}}
+@anchor{#org-mode-citations-section-melpa}
+@strong{Notice:} This package is now deprectated and will be removed
+from MELPA around 18 March 2024. Please use
+@uref{https://git.sr.ht/~swflint/org-cite-overlay,@code{org-cite-overlay-sidecar}}
+in its place, which does roughly the same thing, but in a more flexible
+way, and can utilize information from the @code{org-cite-overlay}
+package (same URL).
+
+This package can be used to show an Org-Mode document's citations in
+@code{universal-sidecar}. This is done through the use of
+@code{citeproc} and can be shown quite flexibly. A minimum configuration
+is as follows:
+
+@verbatim
+(setq universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/"
+      ;; set to your directories for locale and style data
+      universal-sidecar-citeproc-styles "~/.emacs.d/csl-data/styles/")
+(add-to-list 'universal-sidecar-sections 'org-cite-sidecar)
+@end verbatim
+
+It is important to set the @code{universal-sidecar-citeproc-locales} and
+@code{universal-sidecar-citeproc-styles} variables to the directories
+where you have cloned the CSL locale and style data repositories (see
+docstrings for links).
+
+Additionally, there are two arguments to the section which are not
+exposed as customization variables:
+
+@itemize
+@item
+@code{:style} allows you to select a prefered CSL style within
+@code{universal-sidecar-citeproc-styles}. Default is
+@code{universal-sidecar-citeproc-default-style}.
+@item
+@code{:header} allows you to change the header of the section from the
+default ``References''.
+@end itemize
+
+@node Ebib Formatted Reference Section MELPA
+@section Ebib Formatted Reference Section
+@uref{https://melpa.org/#/ebib-sidecar,@image{https://melpa.org/packages/ebib-sidecar-badge,,,MELPA,svg}}
+@anchor{#ebib-formatted-reference-section-melpa}
+This package can be used to show a formatted reference to the bib entry
+at point in @code{ebib}. This is done using the @code{citeproc} library
+and can be flexibly configured. Handling of locale and style management
+is performed using @code{universal-sidecar-citeproc}, and its variables
+(@code{universal-sidecar-citeproc-styles} and
+@code{universal-sidecar-citeproc-locales}) must be configured.
+
+A minimum configuration is shown as follows:
+
+@verbatim
+(setopt universal-sidecar-citeproc-locales "~/.emacs.d/csl-data/locales/" ;set to your directories for locale and style data
+        universal-sidecar-citeproc-styles "~/.emacs.d/csl-data/styles/")
+(add-to-list 'universal-sidecar-sections 'ebib-sidecar)
+@end verbatim
+
+Additionally, there are two arguments to the section which are not
+exposed as customization variables:
+
+@itemize
+@item
+@code{:style} allows you to select a prefered CSL style to override
+@code{universal-sidecar-citeproc-default-style}.
+@item
+@code{:header} allows you to change the header of the section from the
+default ``References''.
+@end itemize
+
+Finally, update based on ebib motion commands can be enabled either
+manually (using @code{universal-sidecar-advise-commands}) or
+automatically by also adding @code{ebib-sidecar-insinuate} somewhere in
+your init file.
+
+@node EBDB Mua Sidecar MELPA
+@section EBDB Mua Sidecar
+@uref{https://melpa.org/#/ebdb-mua-sidecar,@image{https://melpa.org/packages/ebdb-mua-sidecar-badge,,,MELPA,svg}}
+@anchor{#ebdb-mua-sidecar-melpa}
+@uref{https://github.com/girzel/ebdb/,EBDB} records for MUA buffers can
+be displayed using Universal Sidecar. As of now, it only supports
+@code{message-mode}, @code{gnus-article-mode} and
+@code{gnus-summary-mode} (patches welcome to support others, though I
+suspect it's just the major mode names that need set). To use this
+section, add @code{ebdb-mua-sidecar} to your
+@code{universal-sidecar-sections}, and have
+@code{ebdb-mua-sidecar-insinuate} run somewhere in your init.
+
+The following options are available:
+
+@itemize
+@item
+@code{:header} allows you to change the header of the section from the
+default @code{Addressees:}.
+@item
+@code{:updatep} (default @code{'existing}), determines how records are
+updated (see also @code{ebdb-update-records}).
+@item
+@code{:formatter} (default @code{ebdb-default-multiline-formatter})
+determines how records are formatted. This should be an instance of
+@code{ebdb-record-formatter}.
+@end itemize
+
+@node Wordcount Section MELPA
+@section Wordcount Section
+@uref{https://melpa.org/#/wordcount-section,@image{https://melpa.org/packages/wordcount-section-badge,,,MELPA,svg}}
+@anchor{#wordcount-section-melpa}
+Word count information for a buffer can be shown using
+@code{wordcount-section}. Basic installation is as follows.
+
+@verbatim
+(add-to-list 'universal-sidecar-sections #'wordcount-section)
+@end verbatim
+
+The wordcount display can be customized in three ways:
+
+@itemize
+@item
+The @code{:header} keyword argument can be used to change the section
+header.
+@item
+The format of word count information is controlled by the variable
+@code{wordcount-section-format}, which supports the following percent
+escapes: | %w | Word Count | | %s | Sentence Count | | %l | Line Count |
+| %c | Character Count |
+@item
+The @code{wordcount-section-modes} variable controls the modes that have
+wordcounts shown. This list is passed to @code{derived-mode-p} in the
+target buffer.
+@end itemize
+
+@node Basic and Example Sections
+@section Basic and Example Sections
+@anchor{#basic-and-example-sections}
+These are found in @code{universal-sidecar-sections.el}.
+
+@menu
+* Buffer Tail::
+* Org Clock Section::
+@end menu
+
+@node Buffer Tail
+@subsection Buffer Tail
+@anchor{#buffer-tail}
+@code{(universal-sidecar-tail-buffer-section :show-buffer :n-lines :title)}
+
+Show the last @code{n-lines} of @code{show-buffer} in the sidecar with
+@code{title}. If @code{show-buffer} doesn't exist, or is empty, no
+section will be shown. Additionally, @code{show-buffer} can be a buffer
+object, a string buffer name, a symbol whose value is a buffer, or a
+zero-argument function which will be called to get a buffer.
+
+@node Org Clock Section
+@subsection Org Clock Section
+@anchor{#org-clock-section}
+@code{universal-sidecar-org-buffer-clock-section}
+
+Show a display of current org-mode clocking data. In particular, the
+total time clocked in for today, the time since starting the task today,
+and the total time spent on the currently-clocked task (as well as the
+currently clocked task) are shown.
+
+If you use this, it is helpful to include
+@code{(universal-sidecar-org-clock-insinuate)} somewhere in your config.
+
+@bye
