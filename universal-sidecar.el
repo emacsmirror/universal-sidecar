@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.6.1
+;; Version: 1.7.0
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -53,12 +53,13 @@
 ;; `universal-sidecar-uninsinuate'.  Additionally,
 ;; `universal-sidecar-insinuate' will add `universal-sidecar-refresh'
 ;; to the `focus-in-hook', and will set an idle timer to refresh all
-;; sidecar buffers (idle time configured with
-;; `universal-sidecar-refresh-time').  Buffers can be ignored by
-;; modifying the `universal-sidecar-ignore-buffer-regexp', or using
-;; the (irregular) `universal-sidecar-ignore-buffer-functions' hook.
-;; This hook will be run with an argument (the buffer) and run until a
-;; non-nil result.
+;; sidecar buffers if `universal-sidecar-enable-timer' is non-nil
+;; (idle time configured with `universal-sidecar-refresh-time').
+;; Buffers can be ignored by modifying the
+;; `universal-sidecar-ignore-buffer-regexp', or using the (irregular)
+;; `universal-sidecar-ignore-buffer-functions' hook.  This hook will
+;; be run with an argument (the buffer) and run until a non-nil
+;; result.
 ;;
 ;;;; Configuration
 ;;
@@ -306,6 +307,11 @@ or `(symbol location)' lists.  Location should be `:after',
                            (list :tag "Interactive (After)" ,fn (const :interactive-after))
                            (list :tag "Interactive (Before)" ,fn (const :interactive-before))))))
 
+(defcustom universal-sidecar-enable-timer t
+  "Whether an idle timer should be set for refresh of sidecars."
+  :group 'universal-sidecar
+  :type 'boolean)
+
 (defcustom universal-sidecar-refresh-time 5
   "How many seconds Emacs should be idle before sidecars are auto-refreshed."
   :group 'universal-sidecar
@@ -526,10 +532,11 @@ be used (which, see for format of COMMANDS-LIST)."
   "Insinuate (i.e., enable) automatic refresh of sidecars."
   (universal-sidecar-advise-commands)
   (add-hook 'focus-in-hook #'universal-sidecar-refresh)
-  (when (timerp universal-sidecar-refresh-timer)
-    (cancel-timer universal-sidecar-refresh-timer))
-  (setf universal-sidecar-refresh-timer (run-with-idle-timer universal-sidecar-refresh-time t
-                                                             #'universal-sidecar-refresh-all)))
+  (when universal-sidecar-enable-timer
+    (when (timerp universal-sidecar-refresh-timer)
+      (cancel-timer universal-sidecar-refresh-timer))
+    (setf universal-sidecar-refresh-timer (run-with-idle-timer universal-sidecar-refresh-time t
+                                                               #'universal-sidecar-refresh-all))))
 
 (defun universal-sidecar-uninsinuate ()
   "Uninsinuate (i.e., disable) automatic refresh of sidecars."
