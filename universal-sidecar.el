@@ -525,6 +525,7 @@ be used (which, see for format of COMMANDS-LIST)."
 (defun universal-sidecar-insinuate ()
   "Insinuate (i.e., enable) automatic refresh of sidecars."
   (universal-sidecar-advise-commands)
+  (add-hook 'focus-in-hook #'universal-sidecar-refresh)
   (when (timerp universal-sidecar-refresh-timer)
     (cancel-timer universal-sidecar-refresh-timer))
   (setf universal-sidecar-refresh-timer (run-with-idle-timer universal-sidecar-refresh-time t
@@ -533,6 +534,7 @@ be used (which, see for format of COMMANDS-LIST)."
 (defun universal-sidecar-uninsinuate ()
   "Uninsinuate (i.e., disable) automatic refresh of sidecars."
   (universal-sidecar-unadvise-commands)
+  (remove-hook 'focus-in-hook #'universal-sidecar-refresh)
   (when (timerp universal-sidecar-refresh-timer)
     (cancel-timer universal-sidecar-refresh-timer)
     (setf universal-sidecar-refresh-timer nil)))
