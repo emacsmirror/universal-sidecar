@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.7.0
+;; Version: 1.8.0
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -120,6 +120,9 @@
 ;;                                          (no-delete-other-windows . t)))))
 ;;
 ;;
+;; Additionally, buffers can be ignored by setting the buffer-local
+;; value of `universal-sidecar-ignore-buffer' to non-nil.
+;;
 ;; Finally, errors in sections or section definitions are by default
 ;; logged to the *Warnings* buffer.  This is done in a way to allow
 ;; for debugging.  Moreover, the logging can be disabled by setting
@@ -134,7 +137,7 @@
 ;; or to help integrate multiple packages.  A
 ;; `universal-sidecar-sections.el' package is available as well, which
 ;; will have simple section definitions that may be of use.
-
+;;
 ;; However, implementation of functions is generally straight-forward.
 ;; First, sections are simply functions which take a minimum of two
 ;; arguments, `buffer', or the buffer we're generating a sidecar for,
@@ -142,7 +145,7 @@
 ;; functions, it is recommended to avoid writing content to `sidecar'
 ;; until it's verified that the information needed is available.  That
 ;; is **don't write sections without bodies**.
-
+;;
 ;; To aid in defining sections, the `universal-sidecar-define-section'
 ;; and `universal-sidecar-insert-section' macros are available.  The
 ;; first defines a section which can be added to
@@ -221,6 +224,9 @@
 ;;
 ;; v1.5.2 (2024-01-15): `universal-sidecar-buffer-mode-hook' is now
 ;; customizable.
+;;
+;; v1.8.0 (2025-07-30): local variable
+;; `universal-sidecar-ignore-buffer' added.
 
 ;;; Code:
 
@@ -327,7 +333,7 @@ or `(symbol location)' lists.  Location should be `:after',
   :group 'universal-sidecar
   :type 'regexp)
 
-(defcustom universal-sidecar-ignore-buffer-functions (list)
+(defcustom universal-sidecar-ignore-buffer-functions (list #'universal-sidecar-ignore-buffer)
   "Irregular hook to determine if a buffer should be ignored.
 
 Return non-nil if the buffer should be ignored.  Hook will be run
@@ -341,6 +347,25 @@ until non-nil."
   :type '(repeat (list :tag "Binding"
                        (symbol :tag "Variable")
                        (sexp :tag "Expression"))))
+
+
+;;; Set variable to ignore
+
+(defvar-local universal-sidecar-ignore-buffer nil
+  "If non-nil `universal-sidecar' will ignore this buffer.
+
+This buffer is useful for preventing a sidecar display from being
+generated in fleeting or large buffers.  For example, to prevent buffers
+shown with `consult-preview' from having a sidecar display generated,
+add (universal-sidecar-ignore-buffer . t) to
+`consult-preview-variables'.")
+
+(defun universal-sidecar-ignore-buffer (buffer)
+  "Should BUFFER be ignored?
+
+This is determined by the buffer-local value of
+`universal-sidecar-ignore-buffer' being non-nil."
+  (buffer-local-value 'universal-sidecar-ignore-buffer buffer))
 
 
 ;;; Sidecar Buffer Mode

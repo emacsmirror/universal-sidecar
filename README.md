@@ -57,6 +57,8 @@ Additionally, fontification of sections may be performed by the `universal-sidec
 This macro includes a provision to allow you to set some buffer-local variables before the fontification mode is enabled.
 This is done using `universal-sidecar-fontify-default-bindings`, which takes a list of lists, such that the first element of the list is the name of the buffer, and the second element is the expression to evaluate the binding for.
 
+Additionally, buffers can be ignored by setting the buffer-local value of `universal-sidecar-ignore-buffer` to non-nil.
+
 Finally, sidecar buffers are displayed using `display-window`.
 This means that how the buffer is displayed is easily configurable from `display-buffer-alist`.
 The author's configuration is shown below as an example.
