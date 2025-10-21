@@ -1,11 +1,11 @@
 ;;; universal-sidecar.el --- A universal sidecar buffer -*- lexical-binding: t -*-
 
-;; Copyright (C) 2023-2024 Samuel W. Flint <me@samuelwflint.com>
+;; Copyright (C) 2023-2025 Samuel W. Flint <me@samuelwflint.com>
 
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.8.0
+;; Version: 1.8.1
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -453,7 +453,8 @@ If SIDECAR is non-nil, use sidecar for the current frame."
              (buffer (or buffer
                          (if-let ((buf (window-buffer (selected-window)))
                                   (buffer-is-ignored-p
-                                   (or (equal buf sidecar)
+                                   (or (> (minibuffer-depth) 0)
+                                       (equal buf sidecar)
                                        (string-match-p universal-sidecar-ignore-buffer-regexp
                                                        (buffer-name buf))
                                        (run-hook-with-args-until-success 'universal-sidecar-ignore-buffer-functions
