@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.8.1
+;; Version: 1.9.0
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -440,6 +440,20 @@ If FRAME is nil, use `selected-frame'."
                                            universal-sidecar-buffer-id-formatters))))
     (propertize (format-spec universal-sidecar-buffer-id-format specifiers) 'face 'mode-line-buffer-id)))
 
+(defun universal-sidecar--buffer-or-ignore (buffer sidecar)
+  "Return BUFFER if it is not ignored.
+
+A BUFFER is ignored if one of the following hold:
+ - BUFFER is `equal' to SIDECAR
+ - The minibuffer depth is greater than 0
+ - BUFFER name matches `universal-sidecar-ignore-buffer-regep'
+ - Any of the `universal-sidecar-ignore-buffer-functions' return true for BUFFER."
+  (unless (or (equal buffer sidecar)
+              (> (minibuffer-depth) 0)
+              (string-match-p universal-sidecar-ignore-buffer-regexp (buffer-name buffer))
+              (run-hook-with-args-until-success 'universal-sidecar-ignore-buffer-functions buffer))
+    buffer))
+
 (defun universal-sidecar-refresh (&optional buffer sidecar)
   "Refresh sections for BUFFER in SIDECAR.
 
@@ -447,40 +461,32 @@ If BUFFER is non-nil, use the currently focused buffer.
 If SIDECAR is non-nil, use sidecar for the current frame."
   (interactive)
   (save-mark-and-excursion
-    (when (universal-sidecar-visible-p)
-      (let* ((sidecar (or sidecar
-                          (universal-sidecar-get-buffer)))
-             (buffer (or buffer
-                         (if-let ((buf (window-buffer (selected-window)))
-                                  (buffer-is-ignored-p
-                                   (or (> (minibuffer-depth) 0)
-                                       (equal buf sidecar)
-                                       (string-match-p universal-sidecar-ignore-buffer-regexp
-                                                       (buffer-name buf))
-                                       (run-hook-with-args-until-success 'universal-sidecar-ignore-buffer-functions
-                                                                         buf))))
-                             (with-current-buffer sidecar universal-sidecar-current-buffer)
-                           buf))))
-        (with-current-buffer sidecar
-          (let ((inhibit-read-only t))
-            (universal-sidecar-buffer-mode)
-            (erase-buffer)
-            (setq-local mode-line-buffer-identification (universal-sidecar-format-buffer-id buffer))
-            (setq-local universal-sidecar-current-buffer buffer)
-            (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
-            (dolist (section universal-sidecar-sections)
-              (condition-case-unless-debug err
-                  (pcase section
-                    ((pred functionp)
-                     (funcall section buffer sidecar))
-                    (`(,section . ,args)
-                     (apply section (append (list buffer sidecar) args)))
-                    (_
-                     (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section)))
-                (t
-                 (unless universal-sidecar-inhibit-section-error-log
-                   (display-warning 'universal-sidecar (format "Error encountered in displaying section %S: %S" section err) :error)))))
-            (goto-char 0)))))))
+    (when-let* ((sidecar-visible-p (universal-sidecar-visible-p))
+                (sidecar (or sidecar
+                             (universal-sidecar-get-buffer)))
+                (buffer (universal-sidecar--buffer-or-ignore (or buffer
+                                                                 (window-buffer (selected-window)))
+                                                             sidecar)))
+      (with-current-buffer sidecar
+        (let ((inhibit-read-only t))
+          (universal-sidecar-buffer-mode)
+          (erase-buffer)
+          (setq-local mode-line-buffer-identification (universal-sidecar-format-buffer-id buffer))
+          (setq-local universal-sidecar-current-buffer buffer)
+          (universal-sidecar-set-title (propertize (buffer-name buffer) 'face 'bold) sidecar)
+          (dolist (section universal-sidecar-sections)
+            (condition-case-unless-debug err
+                (pcase section
+                  ((pred functionp)
+                   (funcall section buffer sidecar))
+                  (`(,section . ,args)
+                   (apply section (append (list buffer sidecar) args)))
+                  (_
+                   (user-error "Invalid section definition `%S' in `universal-sidecar-sections'" section)))
+              (t
+               (unless universal-sidecar-inhibit-section-error-log
+                 (display-warning 'universal-sidecar (format "Error encountered in displaying section %S: %S" section err) :error)))))
+          (goto-char 0))))))
 
 ;;; Updating the Sidecar
 
