@@ -364,7 +364,7 @@ add (universal-sidecar-ignore-buffer . t) to
   "Should BUFFER be ignored?
 
 This is determined by the buffer-local value of
-`universal-sidecar-ignore-buffer' being non-nil."
+variable `universal-sidecar-ignore-buffer' being non-nil."
   (buffer-local-value 'universal-sidecar-ignore-buffer buffer))
 
 
@@ -507,7 +507,7 @@ If SIDECAR is non-nil, use sidecar for the current frame."
 (defun universal-sidecar-advise-commands (&optional commands-list)
   "Automatically advise COMMANDS-LIST to update the sidecar buffer.
 
-If COMMANDS-LIST is nil, `universal-sidecar-advise-commands' will
+If COMMANDS-LIST is nil, variable `universal-sidecar-advise-commands' will
 be used (which, see for format of COMMANDS-LIST)."
   (dolist (command-spec (or commands-list universal-sidecar-advise-commands))
     (pcase command-spec
@@ -525,7 +525,7 @@ be used (which, see for format of COMMANDS-LIST)."
 (defun universal-sidecar-unadvise-commands (&optional commands-list)
   "Unadvise COMMANDS-LIST to no longer update the sidecar buffer.
 
-If COMMANDS-LIST is nil, `universal-sidecar-advise-commands' will
+If COMMANDS-LIST is nil, variable `universal-sidecar-advise-commands' will
 be used (which, see for format of COMMANDS-LIST)."
   (dolist (command-spec (or commands-list universal-sidecar-advise-commands))
     (let ((command (or (and (listp command-spec) (car command-spec))
