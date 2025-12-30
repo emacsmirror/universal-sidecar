@@ -129,7 +129,9 @@ Finally, section text can be formatted and fontified as if it was in some other 
 An example is shown below.
 
 ```elisp
-(universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+(universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays)
+                                        (org-inhibit-startup t)
+                                        (org-agenda-files nil))
   (some-function-that-generates-org-text)
   (some-post-processing-of-org-text))
 ```

@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: calendar
-;; Version: 0.5.1
+;; Version: 0.5.2
 ;; Package-Requires: ((emacs "29.1") (universal-sidecar "1.5.0") (ts "0.3") (org-ql "0.8"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -292,7 +292,9 @@ Formatting of events is performed by
               (event-output-string (string-join formatted-events "\n")))
     (with-current-buffer sidecar
       (universal-sidecar-insert-section org-appointments-sidecar header
-        (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+        (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays)
+                                                (org-inhibit-startup t)
+                                                (org-agenda-files nil))
           event-output-string)
         (insert "\n")))))
 

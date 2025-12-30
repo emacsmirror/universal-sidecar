@@ -6,7 +6,7 @@
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; Homepage: https://git.sr.ht/~swflint/emacs-universal-sidecar
 ;; Keywords: bib, org
-;; Version: 1.1.0
+;; Version: 1.1.1
 ;; Package-Requires: ((emacs "28.1") (citeproc "0.9.4") (universal-sidecar "1.5.0") (universal-sidecar-citeproc "1.0.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -99,7 +99,9 @@ section title using HEADER."
     (citeproc-add-uncited references processor)
     (with-current-buffer sidecar
       (universal-sidecar-insert-section org-cite-sidecar header
-        (insert (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays))
+        (insert (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays)
+                                                        (org-inhibit-startup t)
+                                                        (org-agenda-files nil))
                   (car (citeproc-render-bib processor 'org 'auto 'nil))
                   (save-match-data
                     (goto-char (point-min))
