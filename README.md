@@ -313,3 +313,10 @@ Show a display of current org-mode clocking data.
 In particular, the total time clocked in for today, the time since starting the task today, and the total time spent on the currently-clocked task (as well as the currently clocked task) are shown.
 
 If you use this, it is helpful to include `(universal-sidecar-org-clock-insinuate)` somewhere in your config.
+
+### Imenu Section
+
+`(universal-sidecar-imenu-section :header)`
+
+Show an outline of imenu entries for the current buffer.
+Override the header with the header keyword argument.

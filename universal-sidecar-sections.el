@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 0.5.0
+;; Version: 0.6.0
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -104,6 +104,49 @@ config."
                                        org-clock-out
                                        org-clock-cancel
                                        org-clock-in-last)))
+
+
+;;; imenu section
+
+(defun universal-sidecar--imenu-to-menu (depth item)
+  "Convert a tree (defined by ITEM) into a text representation.
+
+DEPTH is taken as the depth for the present level of the tree."
+  (cond
+   ((not (listp item))
+    (format "%s - %s" (make-string (* 2 depth) 32) item))
+   ((not (listp (cdr item)))
+    (format "%s - %s" (make-string (* 2 depth) 32) (car item)))
+   ((not (listp (car item)))
+    (string-join (cons (format "%s - %s" (make-string (* 2 depth) 32) (car item))
+                       (mapcar (apply-partially #'universal-sidecar--imenu-to-menu (1+ depth))
+                               (cdr item)))
+                 "\n"))
+   (t
+    (string-join (mapcar (apply-partially #'universal-sidecar--imenu-to-menu depth)
+                         item)
+                 "\n"))))
+
+(universal-sidecar-define-section universal-sidecar-imenu-section ((header "Outline")) ()
+  "Show the imenu items for the current BUFFER.
+
+HEADER allows you to override the section title (default \"Outline\")."
+  (when-let* ((items
+               (condition-case condition
+                   (with-current-buffer buffer
+                     (save-excursion
+                       (without-restriction
+                         (let ((imenu-flatten nil))
+                           (funcall imenu-create-index-function)))))
+                 (imenu-unavailable nil)))
+              (section-text (universal-sidecar--imenu-to-menu 0 items)))
+    (with-current-buffer sidecar
+      (universal-sidecar-insert-section universal-sidecar-imenu-section header
+        (insert
+         (universal-sidecar-fontify-as org-mode ((org-fold-core-style 'overlays)
+                                                 (org-inhibit-startup t)
+                                                 (org-agenda-files nil))
+           section-text))))))
 
 ;;; TODO: Implement some (more) generic sidecars
 
