@@ -5,7 +5,7 @@
 ;; Author: Samuel W. Flint <me@samuelwflint.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 ;; URL: https://git.sr.ht/~swflint/emacs-universal-sidecar
-;; Version: 1.9.1
+;; Version: 1.9.2
 ;; Package-Requires: ((emacs "26.1") (magit-section "3.0.0"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -229,6 +229,10 @@
 ;;
 ;; v1.8.0 (2025-07-30): local variable
 ;; `universal-sidecar-ignore-buffer' added.
+;;
+;; v1.9.2 (2026-03-14): Increase default idle timer length
+;; (`universal-sidecar-refresh-time') to hopefully improve
+;; performance.
 
 ;;; Code:
 
@@ -320,7 +324,7 @@ or `(symbol location)' lists.  Location should be `:after',
   :group 'universal-sidecar
   :type 'boolean)
 
-(defcustom universal-sidecar-refresh-time 5
+(defcustom universal-sidecar-refresh-time 10
   "How many seconds Emacs should be idle before sidecars are auto-refreshed."
   :group 'universal-sidecar
   :type 'number)
